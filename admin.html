@@ -555,6 +555,17 @@ dialog::backdrop{
     </div>
 
     <div class="field">
+  <label>ROLE *</label>
+  <select id="role" required>
+      <option>PLAYER</option>
+      <option>COACH</option>
+      <option>MANAGER</option>
+      <option>OFFICIAL</option>
+      <option>UMPIRE</option>
+  </select>
+</div>
+
+    <div class="field">
       <label>TEAM / LEAGUE</label>
       <input id="team" placeholder="Team name">
     </div>
@@ -950,8 +961,8 @@ function printQR(id){
                 </div>
 
                 <div class="role">
-                    PLAYER
-                </div>
+    ${athlete.role || 'PLAYER'}
+</div>
 
                 <div class="charter">
                     ${athlete.id}
@@ -1128,6 +1139,7 @@ function openForm(a=null){
       $('consentForm').value = a.consentForm || '';
       $('waiverForm').value = a.waiverForm || '';
    }
+  $('role').value = a.role || 'PLAYER';
 
    dlg.showModal();
 }
@@ -1186,6 +1198,7 @@ $('athleteForm').addEventListener('submit',async e=>{
   name:$('name').value.trim(),
   sport:$('sportInput').value,
   division:$('divisionInput').value,
+  role:$('role').value,
   team:$('team').value.trim(),
   position:$('position').value.trim(),
   jersey:$('jersey').value.trim(),
