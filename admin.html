@@ -555,17 +555,6 @@ dialog::backdrop{
     </div>
 
     <div class="field">
-  <label>ROLE *</label>
-  <select id="role" required>
-      <option>PLAYER</option>
-      <option>COACH</option>
-      <option>MANAGER</option>
-      <option>OFFICIAL</option>
-      <option>UMPIRE</option>
-  </select>
-</div>
-
-    <div class="field">
       <label>TEAM / LEAGUE</label>
       <input id="team" placeholder="Team name">
     </div>
@@ -732,42 +721,35 @@ function generateAthleteId(){
 
 }
 
-function generateQR(id){
+function generateQR(id) {
 
-    const athlete =
-    athletes.find(a => a.id === id);
+    const athlete = athletes.find(a => a.id === id);
 
-    if(!athlete) return;
+    if (!athlete) return;
 
-    document.getElementById("qrName")
-    .textContent = athlete.name;
+    document.getElementById("qrName").textContent =
+        athlete.name;
 
     const athleteURL =
-    `${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
+        `${location.origin}${location.pathname.replace(
+            'admin.html',
+            'profile.html'
+        )}?id=${encodeURIComponent(id)}`;
 
-    const canvas =
-    document.getElementById("qrCanvas");
+    const canvas = document.getElementById("qrCanvas");
 
-    canvas.getContext("2d")
-    .clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    QRCode.toCanvas(
-        canvas,
-        athleteURL,
-        {
-            width:250
+    QRCode.toCanvas(canvas, athleteURL, {
+        width: 250
+    }, function(error) {
+        if (error) {
+            alert("Unable to generate QR code.");
+            console.error(error);
+            return;
         }
-    );
 
-    document.getElementById("qrDlg")
-    .showModal();
+        document.getElementById("qrDlg").showModal();
+    });
 }
-  
 function printQR(id){
 
     const athlete =
@@ -825,35 +807,14 @@ function printQR(id){
 
             w.document.close();
 
-            const bg = w.document.querySelector('.bg');
-
-bg.onload = () => {
-    w.print();
-};
-
+            setTimeout(()=>{
+                w.print();
+            },500);
         }
     );
 }
 
   function printID(id){
-
-    .bg{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    z-index:1;
-}
-    .photo,
-.name,
-.role,
-.charter,
-.division,
-.qr{
-    z-index:2;
-}
 
     const athlete =
     athletes.find(a => a.id === id);
@@ -884,58 +845,93 @@ bg.onload = () => {
                 text-align:center;
             }
 
-            @page{
-    margin:0;
-    size:1055px 1491px;
+            .card{
+                position:relative;
+                width:768px;
+                height:1152px;
+                margin:auto;
+            }
+
+            .bg{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
-.card{
-    position:relative;
-    width:1055px;
-    height:1491px;
-    overflow:hidden;
-}
-            .photo{
+.photo,
+.name,
+.role,
+.charter,
+.division,
+.qr{
     position:absolute;
-    top:325px;
-    left:335px;
-    width:390px;
-    height:390px;
-    object-fit:cover;
-    border-radius:10px;
 }
+
+            .photo{
+
+                position:absolute;
+
+                top:258px;
+                left:243px;
+
+                width:280px;
+                height:280px;
+
+                object-fit:cover;
+                border-radius:8px;
+            }
 
             .name{
-    top:790px;
-    left:340px;
-    width:620px;
-}
+                position:absolute;
+                top:635px;
+                left:250px;
+                width:470px;
+                text-align:center;
+                font-size:38px;
+                font-weight:bold;
+                font-family:Georgia,serif;
+            }
 
             .role{
-    top:920px;
-    left:350px;
-    width:600px;
-}
+                position:absolute;
+                top:730px;
+                left:270px;
+                width:470px;
+                text-align:center;
+                font-size:42px;
+                font-weight:bold;
+            }
 
             .charter{
-    top:1050px;
-    left:300px;
-    width:700px;
-}
+                position:absolute;
+                top:815px;
+                left:250px;
+                width:500px;
+                text-align:center;
+                font-size:38px;
+                font-weight:bold;
+            }
 
             .division{
-    top:1180px;
-    left:350px;
-    width:600px;
-}
+                position:absolute;
+                top:900px;
+                left:250px;
+                width:500px;
+                text-align:center;
+                font-size:42px;
+                font-weight:bold;
+            }
 
-
-           .qr{
-    left:45px;
-    bottom:70px;
-    width:310px;
-    height:310px;
-}
+            .qr{
+                position:absolute;
+                left:38px;
+                bottom:60px;
+                width:230px;
+                height:230px;
+            }
 
             </style>
 
@@ -945,8 +941,8 @@ bg.onload = () => {
 
             <div class="card">
 
-               <img
-src="https://bibleeblushie-collab.github.io/brlpmindanao-athletes-gallery/id-template.png"
+                <img
+src="${location.origin}/brlpmindanao-athletes-gallery/id-template.png"
 class="bg">
 
                 ${
@@ -960,8 +956,8 @@ class="bg">
                 </div>
 
                 <div class="role">
-    ${athlete.role || 'PLAYER'}
-</div>
+                    PLAYER
+                </div>
 
                 <div class="charter">
                     ${athlete.id}
@@ -982,13 +978,12 @@ class="bg">
             </html>
             `);
 
-            w.document.close();
+           w.document.close();
 
-const img = w.document.querySelector(".bg");
-
-img.onload = () => {
+setTimeout(() => {
+    w.focus();
     w.print();
-};
+}, 2000);
 
         }
     );
@@ -1082,7 +1077,7 @@ onclick="event.stopPropagation();generateQR('${a.id}')">
 QR
 </button>
 
-<button class="btn light"
+<button class="btn dark"
 onclick="event.stopPropagation();printID('${a.id}')">
 Print ID
 </button>
@@ -1122,13 +1117,11 @@ function openForm(a=null){
       a ? 'Edit Athlete Profile'
         : 'Add Athlete Profile';
 
- if(a){
+   if(a){
 
       $('name').value = a.name || '';
       $('sportInput').value = a.sport || 'Baseball';
       $('divisionInput').value = a.division || '8U';
-      $('role').value = a.role || 'PLAYER';
-
       $('team').value = a.team || '';
       $('position').value = a.position || '';
       $('jersey').value = a.jersey || '';
@@ -1136,11 +1129,16 @@ function openForm(a=null){
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
 
-}else{
+      $('birthCert').value = a.birthCert || '';
+      $('schoolId').value = a.schoolId || '';
+      $('medicalCert').value = a.medicalCert || '';
+      $('consentForm').value = a.consentForm || '';
+      $('waiverForm').value = a.waiverForm || '';
+   }
 
-      $('role').value = 'PLAYER';
-
+   dlg.showModal();
 }
+
 function editAthlete(id){
 
   const a=athletes.find(x=>x.id===id);
@@ -1195,7 +1193,6 @@ $('athleteForm').addEventListener('submit',async e=>{
   name:$('name').value.trim(),
   sport:$('sportInput').value,
   division:$('divisionInput').value,
-  role:$('role').value,
   team:$('team').value.trim(),
   position:$('position').value.trim(),
   jersey:$('jersey').value.trim(),
