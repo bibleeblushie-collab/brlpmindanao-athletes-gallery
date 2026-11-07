@@ -715,46 +715,21 @@ docs.forEach(url => {
 
 function generateAthleteId(){
 
-    const next = athletes.length + 1;
+    const next =
+    athletes.length + 1;
 
     return `BRLP-MIN-${String(next).padStart(3,'0')}`;
 
 }
-
-function generateQR(id){
 
     const athlete =
     athletes.find(a => a.id === id);
 
     if(!athlete) return;
 
-    document.getElementById("qrName").textContent =
-    athlete.name;
+    document.getElementById("qrName")
+    .textContent = athlete.name;
 
-    const athleteURL =
-    `${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
-
-    const canvas =
-    document.getElementById("qrCanvas");
-
-    canvas.getContext("2d").clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    QRCode.toCanvas(
-        canvas,
-        athleteURL,
-        {
-            width:250
-        }
-    );
-
-    document.getElementById("qrDlg")
-    .showModal();
-}
    const athleteURL =
 `${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
 
@@ -885,22 +860,9 @@ function printQR(id){
             }
 
             .bg{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.photo,
-.name,
-.role,
-.charter,
-.division,
-.qr{
-    position:absolute;
-}
+                width:100%;
+                height:100%;
+            }
 
             .photo{
 
@@ -974,8 +936,8 @@ function printQR(id){
             <div class="card">
 
                 <img
-src="${location.origin}/brlpmindanao-athletes-gallery/id-template.png"
-class="bg">
+                src="id-template.png"
+                class="bg">
 
                 ${
                     athlete.photo
@@ -1010,12 +972,11 @@ class="bg">
             </html>
             `);
 
-           w.document.close();
+            w.document.close();
 
-setTimeout(() => {
-    w.focus();
-    w.print();
-}, 2000);
+            setTimeout(()=>{
+                w.print();
+            },1000);
 
         }
     );
