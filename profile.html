@@ -22,6 +22,18 @@ document.getElementById("profile").innerHTML = `
 <p>Total Athletes: ${athletes.length}</p>
 `;
 
+  if(!athlete){
+
+document.getElementById("profile").innerHTML = `
+<h2>Athlete Not Found</h2>
+<p>
+This device does not contain the athlete database.
+</p>
+`;
+
+return;
+}
+
 </script>
 
 </script>
