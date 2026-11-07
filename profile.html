@@ -17,21 +17,45 @@ new URLSearchParams(window.location.search);
 const athleteId =
 params.get("id");
 
-document.getElementById("profile").innerHTML = `
-<p>Athlete ID: ${athleteId}</p>
-<p>Total Athletes: ${athletes.length}</p>
-`;
+const athlete =
+athletes.find(a => a.id === athleteId);
 
-  if(!athlete){
+if(!athlete){
 
 document.getElementById("profile").innerHTML = `
 <h2>Athlete Not Found</h2>
-<p>
-This device does not contain the athlete database.
-</p>
+<p>This device does not contain the athlete database.</p>
 `;
 
-return;
+}else{
+
+document.getElementById("profile").innerHTML = `
+
+<h1>${athlete.name}</h1>
+
+<p><b>Sport:</b> ${athlete.sport}</p>
+
+<p><b>Division:</b> ${athlete.division}</p>
+
+<p><b>Team:</b> ${athlete.team}</p>
+
+<p><b>Position:</b> ${athlete.position}</p>
+
+<p><b>City:</b> ${athlete.city}</p>
+
+<p><b>Season:</b> ${athlete.season}</p>
+
+${
+athlete.photo
+?
+`<img src="${athlete.photo}"
+style="width:250px;border-radius:12px;">`
+:
+''
+}
+
+`;
+
 }
 
 </script>
