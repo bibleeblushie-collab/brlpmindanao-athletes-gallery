@@ -837,6 +837,24 @@ bg.onload = () => {
 
   function printID(id){
 
+    .bg{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:1;
+}
+    .photo,
+.name,
+.role,
+.charter,
+.division,
+.qr{
+    z-index:2;
+}
+
     const athlete =
     athletes.find(a => a.id === id);
 
@@ -860,22 +878,6 @@ bg.onload = () => {
             <title>${athlete.name}</title>
 
             <style>
-
-           .bg{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    z-index:1;
-}
-
-body{
-    margin:0;
-    text-align:center;
-}
-
 
             body{
                 margin:0;
@@ -904,48 +906,31 @@ body{
 }
 
             .name{
-    position:absolute;
     top:790px;
     left:340px;
     width:620px;
-    text-align:center;
-    font-size:38px;
-    font-weight:bold;
 }
 
-           .role{
-    position:absolute;
+            .role{
     top:920px;
     left:350px;
     width:600px;
-    text-align:center;
-    font-size:42px;
-    font-weight:bold;
 }
 
-           .charter{
-    position:absolute;
+            .charter{
     top:1050px;
     left:300px;
     width:700px;
-    text-align:center;
-    font-size:38px;
-    font-weight:bold;
 }
 
             .division{
-    position:absolute;
     top:1180px;
     left:350px;
     width:600px;
-    text-align:center;
-    font-size:42px;
-    font-weight:bold;
 }
 
 
            .qr{
-    position:absolute;
     left:45px;
     bottom:70px;
     width:310px;
@@ -979,12 +964,8 @@ class="bg">
 </div>
 
                 <div class="charter">
-    ${athlete.id.startsWith('BRLP')
-      ? athlete.id
-      : 'BRLP-MIN-' + String(
-          athletes.findIndex(x => x.id === athlete.id) + 1
-        ).padStart(3,'0')}
-</div>
+                    ${athlete.id}
+                </div>
 
                 <div class="division">
                     ${athlete.division}
@@ -1003,10 +984,12 @@ class="bg">
 
             w.document.close();
 
-csetTimeout(() => {
-    w.focus();
+const img = w.document.querySelector(".bg");
+
+img.onload = () => {
     w.print();
-}, 1500);
+};
+
         }
     );
 }
@@ -1153,18 +1136,11 @@ function openForm(a=null){
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
 
-}
- 
- else{
+}else{
 
       $('role').value = 'PLAYER';
 
 }
-
-dlg.showModal();
-
-}
-  
 function editAthlete(id){
 
   const a=athletes.find(x=>x.id===id);
