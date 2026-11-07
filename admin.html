@@ -726,12 +726,13 @@ docs.forEach(url => {
 
 function generateAthleteId(){
 
-    const next =
-    athletes.length + 1;
+    const next = athletes.length + 1;
 
     return `BRLP-MIN-${String(next).padStart(3,'0')}`;
 
 }
+
+function generateQR(id){
 
     const athlete =
     athletes.find(a => a.id === id);
@@ -741,9 +742,8 @@ function generateAthleteId(){
     document.getElementById("qrName")
     .textContent = athlete.name;
 
-   const athleteURL =
-`${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
-
+    const athleteURL =
+    `${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
 
     const canvas =
     document.getElementById("qrCanvas");
@@ -767,7 +767,7 @@ function generateAthleteId(){
     document.getElementById("qrDlg")
     .showModal();
 }
-
+  
 function printQR(id){
 
     const athlete =
@@ -1121,25 +1121,23 @@ function openForm(a=null){
       a ? 'Edit Athlete Profile'
         : 'Add Athlete Profile';
 
-   if(a){
+ if(a){
 
       $('name').value = a.name || '';
       $('sportInput').value = a.sport || 'Baseball';
       $('divisionInput').value = a.division || '8U';
+      $('role').value = a.role || 'PLAYER';
+
       $('team').value = a.team || '';
       $('position').value = a.position || '';
       $('jersey').value = a.jersey || '';
       $('city').value = a.city || '';
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
-
-      $('birthCert').value = a.birthCert || '';
-      $('schoolId').value = a.schoolId || '';
-      $('medicalCert').value = a.medicalCert || '';
-      $('consentForm').value = a.consentForm || '';
-      $('waiverForm').value = a.waiverForm || '';
-   }
-  $('role').value = a.role || 'PLAYER';
+}
+else{
+      $('role').value = 'PLAYER';
+}
 
    dlg.showModal();
 }
