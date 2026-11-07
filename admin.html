@@ -500,6 +500,16 @@ dialog::backdrop{
         🔐 Admin Login
     </button>
 
+    <button class="btn dark"
+onclick="event.stopPropagation();generateQR('${a.id}')">
+QR Code
+</button>
+
+<button class="btn light"
+onclick="event.stopPropagation();printQR('${a.id}')">
+Print QR
+</button>
+    
     <button id="logoutBtn"
         class="btn dark"
         onclick="logout()"
@@ -743,6 +753,106 @@ docs.forEach(url => {
 });
 }
 
+function generateQR(id){
+
+    const athlete =
+    athletes.find(a => a.id === id);
+
+    if(!athlete) return;
+
+    document.getElementById("qrName")
+    .textContent = athlete.name;
+
+    const athleteURL =
+    `${location.origin}${location.pathname}?athlete=${id}`;
+
+    const canvas =
+    document.getElementById("qrCanvas");
+
+    canvas.getContext("2d")
+    .clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    QRCode.toCanvas(
+        canvas,
+        athleteURL,
+        {
+            width:250
+        }
+    );
+
+    document.getElementById("qrDlg")
+    .showModal();
+}
+
+function printQR(id){
+
+    const athlete =
+    athletes.find(a => a.id === id);
+
+    if(!athlete) return;
+
+    const athleteURL =
+    `${location.origin}${location.pathname}?athlete=${id}`;
+
+    QRCode.toDataURL(
+        athleteURL,
+        function(err,url){
+
+            const w =
+            window.open('','_blank');
+
+            w.document.write(`
+            <html>
+            <head>
+            <title>${athlete.name}</title>
+
+            <style>
+
+            body{
+                font-family:Arial;
+                text-align:center;
+                padding:30px;
+            }
+
+            img{
+                width:250px;
+            }
+
+            </style>
+
+            </head>
+
+            <body>
+
+            <h2>${athlete.name}</h2>
+
+            <p>
+            ${athlete.sport}
+            •
+            ${athlete.division}
+            </p>
+
+            <img src="${url}">
+
+            </body>
+
+            </html>
+            `);
+
+            w.document.close();
+
+            setTimeout(()=>{
+                w.print();
+            },500);
+        }
+    );
+}
+
 function render(){
 
     const isAdmin =
@@ -807,6 +917,7 @@ function render(){
           </span>
 
           <div class="cardactions">
+          
 
 ${isAdmin ? `
 <button class="btn light"
@@ -1208,6 +1319,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <canvas id="qrCanvas"></canvas>
 
+<div id="qrName"
+style="margin-top:15px;font-weight:bold">
+</div>
+
 </div>
 
 <div style="padding:20px;text-align:right">
@@ -1220,6 +1335,7 @@ Close
 </div>
 
 </dialog>
+
 
 </body>
 </html>
