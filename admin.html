@@ -825,14 +825,35 @@ function printQR(id){
 
             w.document.close();
 
-            setTimeout(()=>{
-                w.print();
-            },500);
+            const bg = w.document.querySelector('.bg');
+
+bg.onload = () => {
+    w.print();
+};
+
         }
     );
 }
 
   function printID(id){
+
+    .bg{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:1;
+}
+    .photo,
+.name,
+.role,
+.charter,
+.division,
+.qr{
+    z-index:2;
+}
 
     const athlete =
     athletes.find(a => a.id === id);
@@ -863,80 +884,58 @@ function printQR(id){
                 text-align:center;
             }
 
-            .card{
-                position:relative;
-                width:768px;
-                height:1152px;
-                margin:auto;
-            }
+            @page{
+    margin:0;
+    size:1055px 1491px;
+}
 
-            .bg{
-                width:100%;
-                height:100%;
-            }
-
+.card{
+    position:relative;
+    width:1055px;
+    height:1491px;
+    overflow:hidden;
+}
             .photo{
-
-                position:absolute;
-
-                top:258px;
-                left:243px;
-
-                width:280px;
-                height:280px;
-
-                object-fit:cover;
-                border-radius:8px;
-            }
+    position:absolute;
+    top:325px;
+    left:335px;
+    width:390px;
+    height:390px;
+    object-fit:cover;
+    border-radius:10px;
+}
 
             .name{
-                position:absolute;
-                top:635px;
-                left:250px;
-                width:470px;
-                text-align:center;
-                font-size:38px;
-                font-weight:bold;
-                font-family:Georgia,serif;
-            }
+    top:790px;
+    left:340px;
+    width:620px;
+}
 
             .role{
-                position:absolute;
-                top:730px;
-                left:270px;
-                width:470px;
-                text-align:center;
-                font-size:42px;
-                font-weight:bold;
-            }
+    top:920px;
+    left:350px;
+    width:600px;
+}
 
             .charter{
-                position:absolute;
-                top:815px;
-                left:250px;
-                width:500px;
-                text-align:center;
-                font-size:38px;
-                font-weight:bold;
-            }
+    top:1050px;
+    left:300px;
+    width:700px;
+}
 
             .division{
-                position:absolute;
-                top:900px;
-                left:250px;
-                width:500px;
-                text-align:center;
-                font-size:42px;
-                font-weight:bold;
-            }
+    top:1180px;
+    left:350px;
+    width:600px;
+}
 
-            .qr{
-                position:absolute;
-                left:38px;
-                bottom:60px;
-                width:230px;
-                height:230px;
-            }
+
+           .qr{
+    left:45px;
+    bottom:70px;
+    width:310px;
+    height:310px;
+}
 
             </style>
 
@@ -946,9 +945,9 @@ function printQR(id){
 
             <div class="card">
 
-                <img
-                src="id-template.png"
-                class="bg">
+               <img
+src="https://bibleeblushie-collab.github.io/brlpmindanao-athletes-gallery/id-template.png"
+class="bg">
 
                 ${
                     athlete.photo
@@ -985,9 +984,11 @@ function printQR(id){
 
             w.document.close();
 
-            setTimeout(()=>{
-                w.print();
-            },1000);
+const img = w.document.querySelector(".bg");
+
+img.onload = () => {
+    w.print();
+};
 
         }
     );
@@ -1134,14 +1135,12 @@ function openForm(a=null){
       $('city').value = a.city || '';
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
-}
-else{
+
+}else{
+
       $('role').value = 'PLAYER';
-}
 
-   dlg.showModal();
 }
-
 function editAthlete(id){
 
   const a=athletes.find(x=>x.id===id);
