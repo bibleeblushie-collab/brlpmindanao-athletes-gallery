@@ -653,7 +653,7 @@ function printQR(id){
     });
 }
 
-/* FIXED & ACCURATE ID CARD PRINT FUNCTION */
+/* ACCURATELY ALIGNED ID TEMPLATE PRINT FUNCTION */
 function printID(id){
     const athlete = athletes.find(a => a.id === id);
     if(!athlete) return;
@@ -678,128 +678,127 @@ function printID(id){
             margin: 0;
           }
           @media print {
-            body { margin: 0; background: none; }
+            html, body { width: 768px; height: 1152px; margin: 0; padding: 0; }
             .card { box-shadow: none !important; }
           }
+          * { box-sizing: border-box; }
           body {
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f4f4f4;
+            width: 768px;
+            height: 1152px;
             font-family: Arial, sans-serif;
+            background: #ffffff;
+            overflow: hidden;
           }
 
-          /* CARD CONTAINER (768px x 1152px Canvas) */
           .card {
             position: relative;
             width: 768px;
             height: 1152px;
-            background: #ffffff;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: #ffffff;
           }
 
-          /* BACKGROUND TEMPLATE IMAGE */
+          /* Template Image Layer */
           .bg {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 768px;
+            height: 1152px;
             object-fit: cover;
             z-index: 1;
           }
 
-          /* OVERLAY ELEMENTS LAYER */
-          .photo, .name, .role, .charter, .division, .qr {
-            position: absolute;
-            z-index: 2;
-            box-sizing: border-box;
-          }
-
-          /* 1. ATHLETE PHOTO (Centered upper region) */
+          /* Photo fits inside template green photo frame */
           .photo {
-            top: 250px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 280px;
-            height: 280px;
+            position: absolute;
+            top: 258px;
+            left: 251px;
+            width: 266px;
+            height: 266px;
             object-fit: cover;
             border-radius: 12px;
-            border: 4px solid #14532D;
-            background: #E8F1E9;
+            z-index: 2;
           }
 
-          /* 2. ATHLETE NAME */
+          /* Name centered right above NAME: label */
           .name {
-            top: 570px;
-            left: 0;
-            width: 100%;
-            padding: 0 40px;
+            position: absolute;
+            top: 612px;
+            left: 44px;
+            width: 688px;
             text-align: center;
-            font-size: 40px;
+            font-size: 36px;
+            font-weight: 900;
+            color: #14532D;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            z-index: 2;
+          }
+
+          /* Role aligned directly after ROLE: label */
+          .role {
+            position: absolute;
+            top: 704px;
+            left: 365px;
+            width: 320px;
+            text-align: left;
+            font-size: 30px;
+            font-weight: 800;
+            color: #14532D;
+            text-transform: uppercase;
+            z-index: 2;
+          }
+
+          /* Charter ID centered above CHARTER: label (scaled to fit long strings) */
+          .charter {
+            position: absolute;
+            top: 772px;
+            left: 250px;
+            width: 470px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #183326;
+            font-family: monospace, Arial, sans-serif;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            z-index: 2;
+          }
+
+          /* Division aligned directly after DIVISION: label */
+          .division {
+            position: absolute;
+            top: 858px;
+            left: 425px;
+            width: 300px;
+            text-align: left;
+            font-size: 28px;
             font-weight: 800;
             color: #14532D;
             text-transform: uppercase;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            z-index: 2;
           }
 
-          /* 3. ATHLETE ROLE */
-          .role {
-            top: 645px;
-            left: 0;
-            width: 100%;
-            padding: 0 40px;
-            text-align: center;
-            font-size: 32px;
-            font-weight: 800;
-            color: #D62828;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-          }
-
-          /* 4. CHARTER / ATHLETE ID */
-          .charter {
-            top: 715px;
-            left: 0;
-            width: 100%;
-            padding: 0 40px;
-            text-align: center;
-            font-size: 32px;
-            font-weight: 700;
-            color: #183326;
-            font-family: monospace, sans-serif;
-          }
-
-          /* 5. DIVISION & SPORT */
-          .division {
-            top: 780px;
-            left: 0;
-            width: 100%;
-            padding: 0 40px;
-            text-align: center;
-            font-size: 36px;
-            font-weight: 800;
-            color: #14532D;
-            text-transform: uppercase;
-          }
-
-          /* 6. QR CODE (Centered lower region) */
+          /* QR Code positioned in bottom-left white space */
           .qr {
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 210px;
-            height: 210px;
+            position: absolute;
+            top: 860px;
+            left: 45px;
+            width: 180px;
+            height: 180px;
+            z-index: 2;
             background: #ffffff;
-            padding: 8px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 4px;
+            border-radius: 6px;
           }
         </style>
         </head>
