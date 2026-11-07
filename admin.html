@@ -721,69 +721,35 @@ function generateAthleteId(){
 
 }
 
-function generateQR(id){
+function generateQR(id) {
 
-    const athlete =
-    athletes.find(a => a.id === id);
+    const athlete = athletes.find(a => a.id === id);
 
-    if(!athlete) return;
+    if (!athlete) return;
 
     document.getElementById("qrName").textContent =
         athlete.name;
 
     const athleteURL =
-    `${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
+        `${location.origin}${location.pathname.replace(
+            'admin.html',
+            'profile.html'
+        )}?id=${encodeURIComponent(id)}`;
 
-    const canvas =
-    document.getElementById("qrCanvas");
+    const canvas = document.getElementById("qrCanvas");
 
-    canvas.getContext("2d").clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    QRCode.toCanvas(
-        canvas,
-        athleteURL,
-        { width: 250 }
-    );
-
-    document.getElementById("qrDlg")
-    .showModal();
-}
-
-    document.getElementById("qrName")
-    .textContent = athlete.name;
-
-   const athleteURL =
-`${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
-
-
-    const canvas =
-    document.getElementById("qrCanvas");
-
-    canvas.getContext("2d")
-    .clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    QRCode.toCanvas(
-        canvas,
-        athleteURL,
-        {
-            width:250
+    QRCode.toCanvas(canvas, athleteURL, {
+        width: 250
+    }, function(error) {
+        if (error) {
+            alert("Unable to generate QR code.");
+            console.error(error);
+            return;
         }
-    );
 
-    document.getElementById("qrDlg")
-    .showModal();
+        document.getElementById("qrDlg").showModal();
+    });
 }
-
 function printQR(id){
 
     const athlete =
@@ -974,8 +940,12 @@ function printQR(id){
             <body>
 
             <div class="card">
-              
-               ${
+
+                <img
+src="${location.origin}/brlpmindanao-athletes-gallery/id-template.png"
+class="bg">
+
+                ${
                     athlete.photo
                     ? `<img src="${athlete.photo}" class="photo">`
                     : ''
@@ -1001,9 +971,6 @@ function printQR(id){
                 src="${qrData}"
                 class="qr">
 
-<img
-src="${location.origin}/brlpmindanao-athletes-gallery/id-template.png"
-class="bg">
             </div>
 
             </body>
