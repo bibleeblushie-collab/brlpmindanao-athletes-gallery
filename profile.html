@@ -6,52 +6,62 @@
 </head>
 <body>
 
-<h1 id="name"></h1>
-
-<div id="info"></div>
+<div id="profile"></div>
 
 <script>
 
-const KEY='brlMindanaoAthletes_v1';
-
-const athletes=
-JSON.parse(localStorage.getItem(KEY)||'[]');
+const athletes =
+JSON.parse(
+localStorage.getItem("brlMindanaoAthletes_v1") || "[]"
+);
 
 const params =
-new URLSearchParams(location.search);
+new URLSearchParams(window.location.search);
 
 const athleteId =
 params.get("id");
 
 const athlete =
-athletes.find(a=>a.id===athleteId);
+athletes.find(
+a => a.id === athleteId
+);
 
-if(!athlete){
+if(athlete){
 
-document.body.innerHTML=
-"<h2>Athlete Not Found</h2>";
+document.getElementById("profile").innerHTML = `
+<h1>${athlete.name}</h1>
+
+<p>
+<b>Sport:</b> ${athlete.sport}
+</p>
+
+<p>
+<b>Division:</b> ${athlete.division}
+</p>
+
+<p>
+<b>Team:</b> ${athlete.team}
+</p>
+
+<p>
+<b>City:</b> ${athlete.city}
+</p>
+
+${
+athlete.photo ?
+`<img
+src="${athlete.photo}"
+style="width:250px">`
+:
+''
+}
+
+`;
 
 }else{
 
-document.getElementById("name")
-.textContent=athlete.name;
-
-document.getElementById("info")
-.innerHTML=`
-
-<p><b>Sport:</b> ${athlete.sport}</p>
-
-<p><b>Division:</b> ${athlete.division}</p>
-
-<p><b>Team:</b> ${athlete.team}</p>
-
-<p><b>City:</b> ${athlete.city}</p>
-
-<p><b>Season:</b> ${athlete.season}</p>
-
-<p>${athlete.bio}</p>
-
-`;
+document.getElementById("profile").innerHTML =
+"<h2>Athlete not found</h2>";
 
 }
 
