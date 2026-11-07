@@ -825,9 +825,12 @@ function printQR(id){
 
             w.document.close();
 
-            setTimeout(()=>{
-                w.print();
-            },500);
+            const bg = w.document.querySelector('.bg');
+
+bg.onload = () => {
+    w.print();
+};
+
         }
     );
 }
@@ -863,17 +866,28 @@ function printQR(id){
                 text-align:center;
             }
 
-            .card{
-                position:relative;
-                width:768px;
-                height:1152px;
-                margin:auto;
-            }
+            @page{
+    size:A4 portrait;
+    margin:0;
+}
 
-            .bg{
-                width:100%;
-                height:100%;
-            }
+html,body{
+    margin:0;
+    padding:0;
+}
+
+.card{
+    position:relative;
+    width:210mm;
+    height:297mm;
+    overflow:hidden;
+}
+
+.bg{
+    width:100%;
+    height:100%;
+    display:block;
+}
 
             .photo{
 
@@ -947,8 +961,8 @@ function printQR(id){
             <div class="card">
 
                 <img
-                src="id-template.png"
-                class="bg">
+src="https://bibleeblushie-collab.github.io/brlpmindanao-athletes-gallery/id-template.png"
+class="bg">
 
                 ${
                     athlete.photo
@@ -985,9 +999,11 @@ function printQR(id){
 
             w.document.close();
 
-            setTimeout(()=>{
-                w.print();
-            },1000);
+           w.onload = () => {
+    setTimeout(() => {
+        w.print();
+    }, 1000);
+};
 
         }
     );
@@ -1127,17 +1143,17 @@ function openForm(a=null){
       $('sportInput').value = a.sport || 'Baseball';
       $('divisionInput').value = a.division || '8U';
       $('role').value = a.role || 'PLAYER';
-
+}
+else{
+      $('role').value = 'PLAYER';
+}
       $('team').value = a.team || '';
       $('position').value = a.position || '';
       $('jersey').value = a.jersey || '';
       $('city').value = a.city || '';
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
-}
-else{
-      $('role').value = 'PLAYER';
-}
+
 
    dlg.showModal();
 }
