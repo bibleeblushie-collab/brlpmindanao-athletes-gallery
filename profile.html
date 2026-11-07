@@ -6,17 +6,23 @@
 
 <script>
 
+const athletes =
+JSON.parse(
+localStorage.getItem("brlMindanaoAthletes_v1") || "[]"
+);
+
 const params =
 new URLSearchParams(window.location.search);
 
 const athleteId =
 params.get("id");
 
-document.getElementById("profile").innerHTML =
-`
-<p>ID from QR:</p>
-<p>${athleteId}</p>
+document.getElementById("profile").innerHTML = `
+<p>Athlete ID: ${athleteId}</p>
+<p>Total Athletes: ${athletes.length}</p>
 `;
+
+</script>
 
 </script>
 
