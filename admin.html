@@ -663,7 +663,7 @@ function printQR(id){
     });
 }
 
-/* EXACT A4 ALIGNED PRINT ID FUNCTION */
+/* ACCURATE TEMPLATE FIT PRINT ID FUNCTION */
 function printID(id){
     const athlete = athletes.find(a => a.id === id);
     if(!athlete) return;
@@ -685,63 +685,63 @@ function printID(id){
         <title>ID Card - ${esc(athlete.name)}</title>
         <style>
           @page {
-            size: A4 portrait;
+            size: 768px 1152px;
             margin: 0;
           }
           @media print {
-            html, body { width: 210mm; height: 297mm; margin: 0; padding: 0; }
+            html, body { width: 768px; height: 1152px; margin: 0; padding: 0; }
             .card { box-shadow: none !important; }
           }
           * { box-sizing: border-box; }
           body {
             margin: 0;
             padding: 0;
-            width: 794px;
-            height: 1123px;
+            width: 768px;
+            height: 1152px;
             font-family: Arial, sans-serif;
             background: #ffffff;
             overflow: hidden;
           }
 
-          /* A4 STANDARD CONTAINER (794px x 1123px) */
           .card {
             position: relative;
-            width: 794px;
-            height: 1123px;
+            width: 768px;
+            height: 1152px;
             overflow: hidden;
             background: #ffffff;
           }
 
-          /* Background Template Image */
+          /* Template Background Image Layer */
           .bg {
             position: absolute;
             top: 0;
             left: 0;
-            width: 794px;
-            height: 1123px;
+            width: 768px;
+            height: 1152px;
             object-fit: cover;
             z-index: 1;
           }
 
-          /* Photo Box - Centered horizontally inside green frame box */
+          /* Athlete Photo - Perfectly Centered in Template Green Photo Frame */
           .photo {
             position: absolute;
-            top: 240px;
+            top: 248px;
             left: 50%;
             transform: translateX(-50%);
-            width: 255px;
-            height: 255px;
+            width: 260px;
+            height: 260px;
             object-fit: cover;
             border-radius: 12px;
             z-index: 2;
           }
 
-          /* Athlete Name - Centered in Name space (above NAME: label) */
+          /* Athlete Name - Centered with Side Indentation to Fit Template Box */
           .name {
             position: absolute;
-            top: 565px;
-            left: 0;
-            width: 100%;
+            top: 575px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 76%;
             text-align: center;
             font-size: 32px;
             font-weight: 900;
@@ -750,46 +750,57 @@ function printID(id){
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding: 0 40px;
+            padding: 0 15px;
             z-index: 2;
           }
 
-          /* Role - Centered in Role space (below ROLE: label) */
+          /* Role - Centered with Side Indentation to Fit Template Box */
           .role {
             position: absolute;
-            top: 672px;
-            left: 0;
-            width: 100%;
+            top: 662px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 76%;
             text-align: center;
             font-size: 26px;
             font-weight: 800;
             color: #14532D;
             text-transform: uppercase;
             letter-spacing: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 15px;
             z-index: 2;
           }
 
-          /* Charter ID - Centered in Charter space (below CHARTER: label) */
+          /* Charter ID (BRLP-MIN-001) - Centered with Side Indentation */
           .charter {
             position: absolute;
-            top: 752px;
-            left: 0;
-            width: 100%;
+            top: 746px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 76%;
             text-align: center;
             font-size: 26px;
             font-weight: 800;
             color: #183326;
             font-family: Arial, sans-serif;
             letter-spacing: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 15px;
             z-index: 2;
           }
 
-          /* Division & Sport - Centered in Division space (below DIVISION: label) */
+          /* Division & Sport - Centered with Side Indentation */
           .division {
             position: absolute;
-            top: 838px;
-            left: 0;
-            width: 100%;
+            top: 830px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 76%;
             text-align: center;
             font-size: 26px;
             font-weight: 800;
@@ -798,18 +809,17 @@ function printID(id){
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            padding: 0 40px;
+            padding: 0 15px;
             z-index: 2;
           }
 
-          /* QR Code - Centered in bottom QR space */
+          /* QR Code - Placed on the Lower Left Side of the ID Template */
           .qr {
             position: absolute;
             top: 915px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 165px;
-            height: 165px;
+            left: 55px;
+            width: 175px;
+            height: 175px;
             z-index: 2;
             background: #ffffff;
             padding: 5px;
