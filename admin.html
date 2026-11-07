@@ -638,6 +638,11 @@ dialog::backdrop{
 </dialog>
 
 <script>
+
+  if(sessionStorage.getItem("isAdmin") !== "true"){
+    window.location.href = "login.html";
+}
+  
 const KEY='brlMindanaoAthletes_v1';
 
 let athletes=JSON.parse(localStorage.getItem(KEY)||'[]');
