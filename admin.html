@@ -836,6 +836,18 @@ bg.onload = () => {
 }
 
   function printID(id){
+    
+    object-fit:cover;
+    z-index:1;
+}
+    .photo,
+.name,
+.role,
+.charter,
+.division,
+.qr{
+    z-index:2;
+}
 
     const athlete =
     athletes.find(a => a.id === id);
@@ -861,96 +873,87 @@ bg.onload = () => {
 
             <style>
 
+            .bg{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+
             body{
                 margin:0;
                 text-align:center;
             }
 
             @page{
-    size:A4 portrait;
     margin:0;
-}
-
-html,body{
-    margin:0;
-    padding:0;
+    size:1055px 1491px;
 }
 
 .card{
     position:relative;
-    width:210mm;
-    height:297mm;
+    width:1055px;
+    height:1491px;
     overflow:hidden;
 }
-
-.bg{
-    width:100%;
-    height:100%;
-    display:block;
+            .photo{
+    position:absolute;
+    top:325px;
+    left:335px;
+    width:390px;
+    height:390px;
+    object-fit:cover;
+    border-radius:10px;
 }
 
-            .photo{
-
-                position:absolute;
-
-                top:258px;
-                left:243px;
-
-                width:280px;
-                height:280px;
-
-                object-fit:cover;
-                border-radius:8px;
-            }
-
             .name{
-                position:absolute;
-                top:635px;
-                left:250px;
-                width:470px;
-                text-align:center;
-                font-size:38px;
-                font-weight:bold;
-                font-family:Georgia,serif;
-            }
+    position:absolute;
+    top:790px;
+    left:340px;
+    width:620px;
+    text-align:center;
+    font-size:38px;
+    font-weight:bold;
+}
 
-            .role{
-                position:absolute;
-                top:730px;
-                left:270px;
-                width:470px;
-                text-align:center;
-                font-size:42px;
-                font-weight:bold;
-            }
+           .role{
+    position:absolute;
+    top:920px;
+    left:350px;
+    width:600px;
+    text-align:center;
+    font-size:42px;
+    font-weight:bold;
+}
 
-            .charter{
-                position:absolute;
-                top:815px;
-                left:250px;
-                width:500px;
-                text-align:center;
-                font-size:38px;
-                font-weight:bold;
-            }
+           .charter{
+    position:absolute;
+    top:1050px;
+    left:300px;
+    width:700px;
+    text-align:center;
+    font-size:38px;
+    font-weight:bold;
+}
 
             .division{
-                position:absolute;
-                top:900px;
-                left:250px;
-                width:500px;
-                text-align:center;
-                font-size:42px;
-                font-weight:bold;
-            }
+    position:absolute;
+    top:1180px;
+    left:350px;
+    width:600px;
+    text-align:center;
+    font-size:42px;
+    font-weight:bold;
+}
 
-            .qr{
-                position:absolute;
-                left:38px;
-                bottom:60px;
-                width:230px;
-                height:230px;
-            }
+
+           .qr{
+    position:absolute;
+    left:45px;
+    bottom:70px;
+    width:310px;
+    height:310px;
+}
 
             </style>
 
@@ -960,7 +963,7 @@ html,body{
 
             <div class="card">
 
-                <img
+               <img
 src="https://bibleeblushie-collab.github.io/brlpmindanao-athletes-gallery/id-template.png"
 class="bg">
 
@@ -979,8 +982,12 @@ class="bg">
 </div>
 
                 <div class="charter">
-                    ${athlete.id}
-                </div>
+    ${athlete.id.startsWith('BRLP')
+      ? athlete.id
+      : 'BRLP-MIN-' + String(
+          athletes.findIndex(x => x.id === athlete.id) + 1
+        ).padStart(3,'0')}
+</div>
 
                 <div class="division">
                     ${athlete.division}
@@ -999,10 +1006,10 @@ class="bg">
 
             w.document.close();
 
-           w.onload = () => {
-    setTimeout(() => {
-        w.print();
-    }, 1000);
+const img = w.document.querySelector(".bg");
+
+img.onload = () => {
+    w.print();
 };
 
         }
@@ -1143,10 +1150,7 @@ function openForm(a=null){
       $('sportInput').value = a.sport || 'Baseball';
       $('divisionInput').value = a.division || '8U';
       $('role').value = a.role || 'PLAYER';
-}
-else{
-      $('role').value = 'PLAYER';
-}
+
       $('team').value = a.team || '';
       $('position').value = a.position || '';
       $('jersey').value = a.jersey || '';
@@ -1154,10 +1158,18 @@ else{
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
 
+}
+ 
+ else{
 
-   dlg.showModal();
+      $('role').value = 'PLAYER';
+
 }
 
+dlg.showModal();
+
+}
+  
 function editAthlete(id){
 
   const a=athletes.find(x=>x.id===id);
