@@ -825,12 +825,9 @@ function printQR(id){
 
             w.document.close();
 
-            const bg = w.document.querySelector('.bg');
-
-bg.onload = () => {
-    w.print();
-};
-
+            setTimeout(()=>{
+                w.print();
+            },500);
         }
     );
 }
@@ -866,28 +863,17 @@ bg.onload = () => {
                 text-align:center;
             }
 
-            @page{
-    size:A4 portrait;
-    margin:0;
-}
+            .card{
+                position:relative;
+                width:768px;
+                height:1152px;
+                margin:auto;
+            }
 
-html,body{
-    margin:0;
-    padding:0;
-}
-
-.card{
-    position:relative;
-    width:210mm;
-    height:297mm;
-    overflow:hidden;
-}
-
-.bg{
-    width:100%;
-    height:100%;
-    display:block;
-}
+            .bg{
+                width:100%;
+                height:100%;
+            }
 
             .photo{
 
@@ -961,8 +947,8 @@ html,body{
             <div class="card">
 
                 <img
-src="https://bibleeblushie-collab.github.io/brlpmindanao-athletes-gallery/id-template.png"
-class="bg">
+                src="id-template.png"
+                class="bg">
 
                 ${
                     athlete.photo
@@ -999,11 +985,9 @@ class="bg">
 
             w.document.close();
 
-           w.onload = () => {
-    setTimeout(() => {
-        w.print();
-    }, 1000);
-};
+            setTimeout(()=>{
+                w.print();
+            },1000);
 
         }
     );
@@ -1097,7 +1081,7 @@ onclick="event.stopPropagation();generateQR('${a.id}')">
 QR
 </button>
 
-<button class="btn light"
+<button class="btn dark"
 onclick="event.stopPropagation();printID('${a.id}')">
 Print ID
 </button>
@@ -1143,17 +1127,17 @@ function openForm(a=null){
       $('sportInput').value = a.sport || 'Baseball';
       $('divisionInput').value = a.division || '8U';
       $('role').value = a.role || 'PLAYER';
-}
-else{
-      $('role').value = 'PLAYER';
-}
+
       $('team').value = a.team || '';
       $('position').value = a.position || '';
       $('jersey').value = a.jersey || '';
       $('city').value = a.city || '';
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
-
+}
+else{
+      $('role').value = 'PLAYER';
+}
 
    dlg.showModal();
 }
