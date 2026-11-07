@@ -499,16 +499,6 @@ dialog::backdrop{
     onclick="location.href='admin.html'">
         🔐 Admin Login
     </button>
-
-    <button class="btn dark"
-onclick="alert('QR button works')">
-QR Code
-</button>
-
-<button class="btn light"
-onclick="event.stopPropagation();printQR('${a.id}')">
-Print QR
-</button>
     
     <button id="logoutBtn"
         class="btn dark"
@@ -649,33 +639,7 @@ Print QR
 
 <script>
 
-  function generateQR(id){
 
-    const athlete = athletes.find(
-        a => a.id === id
-    );
-
-    if(!athlete) return;
-
-    const url =
-    location.origin +
-    location.pathname.replace(
-        "admin.html",
-        "profile.html"
-    ) +
-    "?id=" + id;
-
-    QRCode.toCanvas(
-        document.getElementById("qrCanvas"),
-        url,
-        {
-            width:250
-        }
-    );
-
-    document.getElementById("qrDlg")
-    .showModal();
-}
 
  console.log(
     "isAdmin=",
@@ -763,8 +727,9 @@ function generateQR(id){
     document.getElementById("qrName")
     .textContent = athlete.name;
 
-    const athleteURL =
-    `${location.origin}${location.pathname}?athlete=${id}`;
+   const athleteURL =
+`${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
+
 
     const canvas =
     document.getElementById("qrCanvas");
@@ -934,6 +899,16 @@ Delete
 <button class="btn dark"
 onclick="event.stopPropagation();viewProfile('${a.id}')">
 View Profile
+</button>
+
+<button class="btn dark"
+onclick="event.stopPropagation();generateQR('${a.id}')">
+QR
+</button>
+
+<button class="btn light"
+onclick="event.stopPropagation();printQR('${a.id}')">
+Print QR
 </button>
 
 </div>
@@ -1309,6 +1284,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </dialog>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  
 <dialog id="qrDlg">
 
 <div class="modalhead">
