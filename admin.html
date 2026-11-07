@@ -1129,17 +1129,17 @@ function openForm(a=null){
       $('sportInput').value = a.sport || 'Baseball';
       $('divisionInput').value = a.division || '8U';
       $('role').value = a.role || 'PLAYER';
-
+}
+else{
+      $('role').value = 'PLAYER';
+}
       $('team').value = a.team || '';
       $('position').value = a.position || '';
       $('jersey').value = a.jersey || '';
       $('city').value = a.city || '';
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
-}
-else{
-      $('role').value = 'PLAYER';
-}
+
 
    dlg.showModal();
 }
