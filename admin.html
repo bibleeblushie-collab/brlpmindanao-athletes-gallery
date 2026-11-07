@@ -867,19 +867,21 @@ bg.onload = () => {
             }
 
             @page{
+    size:A4 portrait;
     margin:0;
-    size:105mm 149mm;
+}
+
+html,body{
+    margin:0;
+    padding:0;
 }
 
 .card{
-    width:105mm;
-    height:149mm;
-}
-
-.bg{
-    width:100%;
-    height:100%;
-    display:block;
+    position:relative;
+    width:210mm;
+    height:297mm;
+    margin:0 auto;
+    overflow:hidden;
 }
 
             .photo{
@@ -953,7 +955,7 @@ bg.onload = () => {
 
             <div class="card">
 
-                <img
+               <img
 src="https://bibleeblushie-collab.github.io/brlpmindanao-athletes-gallery/id-template.png"
 class="bg">
 
@@ -992,9 +994,9 @@ class="bg">
 
             w.document.close();
 
-const bg = w.document.querySelector('.bg');
+const img = w.document.querySelector(".bg");
 
-bg.onload = () => {
+img.onload = () => {
     w.print();
 };
 
