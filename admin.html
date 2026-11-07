@@ -721,50 +721,35 @@ function generateAthleteId(){
 
 }
 
-function generateAthleteId(){
+function generateQR(id) {
 
-    const next = athletes.length + 1;
+    const athlete = athletes.find(a => a.id === id);
 
-    return `BRLP-MIN-${String(next).padStart(3,'0')}`;
+    if (!athlete) return;
 
-}
-
-function generateQR(id){
-
-    const athlete =
-    athletes.find(a => a.id === id);
-
-    if(!athlete) return;
-
-    document.getElementById("qrName")
-    .textContent = athlete.name;
+    document.getElementById("qrName").textContent =
+        athlete.name;
 
     const athleteURL =
-    `${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
+        `${location.origin}${location.pathname.replace(
+            'admin.html',
+            'profile.html'
+        )}?id=${encodeURIComponent(id)}`;
 
-    const canvas =
-    document.getElementById("qrCanvas");
+    const canvas = document.getElementById("qrCanvas");
 
-    canvas.getContext("2d").clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+    QRCode.toCanvas(canvas, athleteURL, {
+        width: 250
+    }, function(error) {
+        if (error) {
+            alert("Unable to generate QR code.");
+            console.error(error);
+            return;
+        }
 
-    QRCode.toCanvas(
-        canvas,
-        athleteURL,
-        { width:250 }
-    );
-
-    document.getElementById("qrDlg")
-    .showModal();
+        document.getElementById("qrDlg").showModal();
+    });
 }
-    document.getElementById("qrDlg")
-    .showModal();
-}
-
 function printQR(id){
 
     const athlete =
