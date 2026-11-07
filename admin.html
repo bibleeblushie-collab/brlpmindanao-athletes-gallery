@@ -1126,11 +1126,8 @@ function viewProfile(id){
 }
 
 function logout(){
-
-   sessionStorage.removeItem("isAdmin");
-
-   location.reload();
-
+    sessionStorage.removeItem("isAdmin");
+    window.location.href = "login.html";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
