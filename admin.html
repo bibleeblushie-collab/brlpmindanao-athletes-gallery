@@ -836,13 +836,7 @@ bg.onload = () => {
 }
 
   function printID(id){
-
-    .bg{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
+    
     object-fit:cover;
     z-index:1;
 }
@@ -879,6 +873,13 @@ bg.onload = () => {
 
             <style>
 
+            .bg{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+
             body{
                 margin:0;
                 text-align:center;
@@ -906,31 +907,48 @@ bg.onload = () => {
 }
 
             .name{
+    position:absolute;
     top:790px;
     left:340px;
     width:620px;
+    text-align:center;
+    font-size:38px;
+    font-weight:bold;
 }
 
-            .role{
+           .role{
+    position:absolute;
     top:920px;
     left:350px;
     width:600px;
+    text-align:center;
+    font-size:42px;
+    font-weight:bold;
 }
 
-            .charter{
+           .charter{
+    position:absolute;
     top:1050px;
     left:300px;
     width:700px;
+    text-align:center;
+    font-size:38px;
+    font-weight:bold;
 }
 
             .division{
+    position:absolute;
     top:1180px;
     left:350px;
     width:600px;
+    text-align:center;
+    font-size:42px;
+    font-weight:bold;
 }
 
 
            .qr{
+    position:absolute;
     left:45px;
     bottom:70px;
     width:310px;
@@ -964,8 +982,12 @@ class="bg">
 </div>
 
                 <div class="charter">
-                    ${athlete.id}
-                </div>
+    ${athlete.id.startsWith('BRLP')
+      ? athlete.id
+      : 'BRLP-MIN-' + String(
+          athletes.findIndex(x => x.id === athlete.id) + 1
+        ).padStart(3,'0')}
+</div>
 
                 <div class="division">
                     ${athlete.division}
@@ -1136,11 +1158,18 @@ function openForm(a=null){
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
 
-}else{
+}
+ 
+ else{
 
       $('role').value = 'PLAYER';
 
 }
+
+dlg.showModal();
+
+}
+  
 function editAthlete(id){
 
   const a=athletes.find(x=>x.id===id);
