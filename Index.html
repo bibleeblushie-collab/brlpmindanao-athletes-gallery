@@ -894,7 +894,7 @@ $('athleteForm').addEventListener('submit',async e=>{
   }
 
   const a={
-  id:id||crypto.randomUUID(),
+  id:id || Date.now().toString(),
   name:$('name').value.trim(),
   sport:$('sportInput').value,
   division:$('divisionInput').value,
