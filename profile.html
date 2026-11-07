@@ -1,21 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Athlete Profile</title>
-</head>
 <body>
+
+<h1>Profile Page Loaded</h1>
 
 <div id="profile"></div>
 
 <script>
-
-<script>
-
-const athletes =
-JSON.parse(
-localStorage.getItem("brlMindanaoAthletes_v1") || "[]"
-);
 
 const params =
 new URLSearchParams(window.location.search);
@@ -23,51 +12,12 @@ new URLSearchParams(window.location.search);
 const athleteId =
 params.get("id");
 
-const athlete =
-athletes.find(
-a => a.id === athleteId
-);
-
-if(athlete){
-
-document.getElementById("profile").innerHTML = `
-
-<h1>${athlete.name}</h1>
-
-<p><b>Sport:</b> ${athlete.sport}</p>
-
-<p><b>Division:</b> ${athlete.division}</p>
-
-<p><b>Team:</b> ${athlete.team}</p>
-
-<p><b>Position:</b> ${athlete.position}</p>
-
-<p><b>City:</b> ${athlete.city}</p>
-
-<p><b>Season:</b> ${athlete.season}</p>
-
-${
-athlete.photo ?
-`<img src="${athlete.photo}"
-style="width:250px;border-radius:10px;">`
-:
-''
-}
-
+document.getElementById("profile").innerHTML =
+`
+<p>ID from QR:</p>
+<p>${athleteId}</p>
 `;
-
-}
-else{
-
-document.getElementById("profile").innerHTML = `
-<h2>Athlete Not Found</h2>
-`;
-
-}
-
-</script>
 
 </script>
 
 </body>
-</html>
