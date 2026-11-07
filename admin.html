@@ -761,8 +761,8 @@ function printQR(id){
 
     if(!athlete) return;
 
-    const athleteURL =
-    `${location.origin}${location.pathname}?athlete=${id}`;
+   const athleteURL =
+`${location.origin}/brlpmindanao-athletes-gallery/profile.html?id=${id}`;
 
     QRCode.toDataURL(
         athleteURL,
