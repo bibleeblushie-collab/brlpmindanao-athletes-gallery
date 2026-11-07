@@ -555,17 +555,6 @@ dialog::backdrop{
     </div>
 
     <div class="field">
-  <label>ROLE *</label>
-  <select id="role" required>
-      <option>PLAYER</option>
-      <option>COACH</option>
-      <option>MANAGER</option>
-      <option>OFFICIAL</option>
-      <option>UMPIRE</option>
-  </select>
-</div>
-
-    <div class="field">
       <label>TEAM / LEAGUE</label>
       <input id="team" placeholder="Team name">
     </div>
@@ -726,48 +715,41 @@ docs.forEach(url => {
 
 function generateAthleteId(){
 
-    const next =
-    athletes.length + 1;
+    const next = athletes.length + 1;
 
     return `BRLP-MIN-${String(next).padStart(3,'0')}`;
 
 }
 
-    const athlete =
-    athletes.find(a => a.id === id);
+function generateQR(id) {
 
-    if(!athlete) return;
+    const athlete = athletes.find(a => a.id === id);
 
-    document.getElementById("qrName")
-    .textContent = athlete.name;
+    if (!athlete) return;
 
-   const athleteURL =
-`${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
+    document.getElementById("qrName").textContent =
+        athlete.name;
 
+    const athleteURL =
+        `${location.origin}${location.pathname.replace(
+            'admin.html',
+            'profile.html'
+        )}?id=${encodeURIComponent(id)}`;
 
-    const canvas =
-    document.getElementById("qrCanvas");
+    const canvas = document.getElementById("qrCanvas");
 
-    canvas.getContext("2d")
-    .clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    QRCode.toCanvas(
-        canvas,
-        athleteURL,
-        {
-            width:250
+    QRCode.toCanvas(canvas, athleteURL, {
+        width: 250
+    }, function(error) {
+        if (error) {
+            alert("Unable to generate QR code.");
+            console.error(error);
+            return;
         }
-    );
 
-    document.getElementById("qrDlg")
-    .showModal();
+        document.getElementById("qrDlg").showModal();
+    });
 }
-
 function printQR(id){
 
     const athlete =
@@ -871,9 +853,22 @@ function printQR(id){
             }
 
             .bg{
-                width:100%;
-                height:100%;
-            }
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.photo,
+.name,
+.role,
+.charter,
+.division,
+.qr{
+    position:absolute;
+}
 
             .photo{
 
@@ -947,8 +942,8 @@ function printQR(id){
             <div class="card">
 
                 <img
-                src="id-template.png"
-                class="bg">
+src="${location.origin}/brlpmindanao-athletes-gallery/id-template.png"
+class="bg">
 
                 ${
                     athlete.photo
@@ -961,8 +956,8 @@ function printQR(id){
                 </div>
 
                 <div class="role">
-    ${athlete.role || 'PLAYER'}
-</div>
+                    PLAYER
+                </div>
 
                 <div class="charter">
                     ${athlete.id}
@@ -983,11 +978,12 @@ function printQR(id){
             </html>
             `);
 
-            w.document.close();
+           w.document.close();
 
-            setTimeout(()=>{
-                w.print();
-            },1000);
+setTimeout(() => {
+    w.focus();
+    w.print();
+}, 2000);
 
         }
     );
@@ -1139,7 +1135,6 @@ function openForm(a=null){
       $('consentForm').value = a.consentForm || '';
       $('waiverForm').value = a.waiverForm || '';
    }
-  $('role').value = a.role || 'PLAYER';
 
    dlg.showModal();
 }
@@ -1198,7 +1193,6 @@ $('athleteForm').addEventListener('submit',async e=>{
   name:$('name').value.trim(),
   sport:$('sportInput').value,
   division:$('divisionInput').value,
-  role:$('role').value,
   team:$('team').value.trim(),
   position:$('position').value.trim(),
   jersey:$('jersey').value.trim(),
