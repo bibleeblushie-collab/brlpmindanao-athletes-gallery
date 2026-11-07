@@ -836,6 +836,18 @@ bg.onload = () => {
 }
 
   function printID(id){
+    
+    object-fit:cover;
+    z-index:1;
+}
+    .photo,
+.name,
+.role,
+.charter,
+.division,
+.qr{
+    z-index:2;
+}
 
     const athlete =
     athletes.find(a => a.id === id);
@@ -861,21 +873,12 @@ bg.onload = () => {
 
             <style>
 
-           .bg{
+            .bg{
     position:absolute;
     top:0;
     left:0;
     width:100%;
     height:100%;
-    object-fit:cover;
-    z-index:1;
-}
-
-body{
-    margin:0;
-    text-align:center;
-}
-
 
             body{
                 margin:0;
@@ -1003,10 +1006,12 @@ class="bg">
 
             w.document.close();
 
-csetTimeout(() => {
-    w.focus();
+const img = w.document.querySelector(".bg");
+
+img.onload = () => {
     w.print();
-}, 1500);
+};
+
         }
     );
 }
