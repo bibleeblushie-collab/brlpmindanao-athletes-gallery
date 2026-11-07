@@ -663,7 +663,7 @@ function printQR(id){
     });
 }
 
-/* CENTER-ALIGNED PRINT ID FUNCTION WITH BRLP-MIN-001 SERIES */
+/* EXACT A4 ALIGNED PRINT ID FUNCTION */
 function printID(id){
     const athlete = athletes.find(a => a.id === id);
     if(!athlete) return;
@@ -685,64 +685,65 @@ function printID(id){
         <title>ID Card - ${esc(athlete.name)}</title>
         <style>
           @page {
-            size: 768px 1152px;
+            size: A4 portrait;
             margin: 0;
           }
           @media print {
-            html, body { width: 768px; height: 1152px; margin: 0; padding: 0; }
+            html, body { width: 210mm; height: 297mm; margin: 0; padding: 0; }
             .card { box-shadow: none !important; }
           }
           * { box-sizing: border-box; }
           body {
             margin: 0;
             padding: 0;
-            width: 768px;
-            height: 1152px;
+            width: 794px;
+            height: 1123px;
             font-family: Arial, sans-serif;
             background: #ffffff;
             overflow: hidden;
           }
 
+          /* A4 STANDARD CONTAINER (794px x 1123px) */
           .card {
             position: relative;
-            width: 768px;
-            height: 1152px;
+            width: 794px;
+            height: 1123px;
             overflow: hidden;
             background: #ffffff;
           }
 
-          /* Template Background Image */
+          /* Background Template Image */
           .bg {
             position: absolute;
             top: 0;
             left: 0;
-            width: 768px;
-            height: 1152px;
+            width: 794px;
+            height: 1123px;
             object-fit: cover;
             z-index: 1;
           }
 
-          /* Photo Box - Centered vertically & horizontally in frame */
+          /* Photo Box - Centered horizontally inside green frame box */
           .photo {
             position: absolute;
-            top: 245px;
+            top: 240px;
             left: 50%;
             transform: translateX(-50%);
-            width: 275px;
-            height: 275px;
+            width: 255px;
+            height: 255px;
             object-fit: cover;
             border-radius: 12px;
             z-index: 2;
           }
 
-          /* Athlete Name - Centered in Name Box */
+          /* Athlete Name - Centered in Name space (above NAME: label) */
           .name {
             position: absolute;
-            top: 585px;
+            top: 565px;
             left: 0;
             width: 100%;
             text-align: center;
-            font-size: 34px;
+            font-size: 32px;
             font-weight: 900;
             color: #14532D;
             text-transform: uppercase;
@@ -753,14 +754,14 @@ function printID(id){
             z-index: 2;
           }
 
-          /* Role - Centered in Role Box */
+          /* Role - Centered in Role space (below ROLE: label) */
           .role {
             position: absolute;
-            top: 670px;
+            top: 672px;
             left: 0;
             width: 100%;
             text-align: center;
-            font-size: 30px;
+            font-size: 26px;
             font-weight: 800;
             color: #14532D;
             text-transform: uppercase;
@@ -768,14 +769,14 @@ function printID(id){
             z-index: 2;
           }
 
-          /* Charter ID (BRLP-MIN-001) - Centered in Charter Box */
+          /* Charter ID - Centered in Charter space (below CHARTER: label) */
           .charter {
             position: absolute;
-            top: 755px;
+            top: 752px;
             left: 0;
             width: 100%;
             text-align: center;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             color: #183326;
             font-family: Arial, sans-serif;
@@ -783,14 +784,14 @@ function printID(id){
             z-index: 2;
           }
 
-          /* Division & Sport - Centered in Division Box */
+          /* Division & Sport - Centered in Division space (below DIVISION: label) */
           .division {
             position: absolute;
-            top: 835px;
+            top: 838px;
             left: 0;
             width: 100%;
             text-align: center;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             color: #14532D;
             text-transform: uppercase;
@@ -801,17 +802,17 @@ function printID(id){
             z-index: 2;
           }
 
-          /* QR Code - Centered in Bottom Section */
+          /* QR Code - Centered in bottom QR space */
           .qr {
             position: absolute;
             top: 915px;
             left: 50%;
             transform: translateX(-50%);
-            width: 170px;
-            height: 170px;
+            width: 165px;
+            height: 165px;
             z-index: 2;
             background: #ffffff;
-            padding: 6px;
+            padding: 5px;
             border-radius: 8px;
           }
         </style>
