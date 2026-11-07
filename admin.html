@@ -947,7 +947,7 @@ function printQR(id){
             <div class="card">
 
                 <img
-                src="id-template.png"
+                src="https://bibleeblushie-collab.github.io/brlpmindanao-athletes-gallery/id-template.png"
                 class="bg">
 
                 ${
@@ -985,9 +985,11 @@ function printQR(id){
 
             w.document.close();
 
-            setTimeout(()=>{
-                w.print();
-            },1000);
+           w.onload = () => {
+    setTimeout(() => {
+        w.print();
+    }, 1000);
+};
 
         }
     );
