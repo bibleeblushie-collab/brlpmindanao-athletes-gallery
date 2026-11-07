@@ -715,17 +715,44 @@ docs.forEach(url => {
 
 function generateAthleteId(){
 
-    const next =
-    athletes.length + 1;
+    const next = athletes.length + 1;
 
     return `BRLP-MIN-${String(next).padStart(3,'0')}`;
 
 }
 
+function generateQR(id){
+
     const athlete =
     athletes.find(a => a.id === id);
 
     if(!athlete) return;
+
+    document.getElementById("qrName").textContent =
+        athlete.name;
+
+    const athleteURL =
+    `${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
+
+    const canvas =
+    document.getElementById("qrCanvas");
+
+    canvas.getContext("2d").clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    QRCode.toCanvas(
+        canvas,
+        athleteURL,
+        { width: 250 }
+    );
+
+    document.getElementById("qrDlg")
+    .showModal();
+}
 
     document.getElementById("qrName")
     .textContent = athlete.name;
@@ -860,9 +887,22 @@ function printQR(id){
             }
 
             .bg{
-                width:100%;
-                height:100%;
-            }
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.photo,
+.name,
+.role,
+.charter,
+.division,
+.qr{
+    position:absolute;
+}
 
             .photo{
 
@@ -936,8 +976,8 @@ function printQR(id){
             <div class="card">
 
                 <img
-                src="id-template.png"
-                class="bg">
+src="${location.origin}/brlpmindanao-athletes-gallery/id-template.png"
+class="bg">
 
                 ${
                     athlete.photo
@@ -972,11 +1012,12 @@ function printQR(id){
             </html>
             `);
 
-            w.document.close();
+           w.document.close();
 
-            setTimeout(()=>{
-                w.print();
-            },1000);
+setTimeout(() => {
+    w.focus();
+    w.print();
+}, 2000);
 
         }
     );
