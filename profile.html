@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Athlete Profile</title>
+</head>
+<body>
+
+<h1 id="name"></h1>
+
+<div id="info"></div>
+
+<script>
+
+const KEY='brlMindanaoAthletes_v1';
+
+const athletes=
+JSON.parse(localStorage.getItem(KEY)||'[]');
+
+const params =
+new URLSearchParams(location.search);
+
+const athleteId =
+params.get("id");
+
+const athlete =
+athletes.find(a=>a.id===athleteId);
+
+if(!athlete){
+
+document.body.innerHTML=
+"<h2>Athlete Not Found</h2>";
+
+}else{
+
+document.getElementById("name")
+.textContent=athlete.name;
+
+document.getElementById("info")
+.innerHTML=`
+
+<p><b>Sport:</b> ${athlete.sport}</p>
+
+<p><b>Division:</b> ${athlete.division}</p>
+
+<p><b>Team:</b> ${athlete.team}</p>
+
+<p><b>City:</b> ${athlete.city}</p>
+
+<p><b>Season:</b> ${athlete.season}</p>
+
+<p>${athlete.bio}</p>
+
+`;
+
+}
+
+</script>
+
+</body>
+</html>
