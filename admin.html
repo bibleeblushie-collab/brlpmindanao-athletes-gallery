@@ -867,20 +867,13 @@ bg.onload = () => {
             }
 
             @page{
-    size:A4 portrait;
     margin:0;
-}
-
-html,body{
-    margin:0;
-    padding:0;
+    size:105mm 149mm;
 }
 
 .card{
-    position:relative;
-    width:210mm;
-    height:297mm;
-    overflow:hidden;
+    width:105mm;
+    height:149mm;
 }
 
 .bg{
@@ -999,10 +992,10 @@ class="bg">
 
             w.document.close();
 
-           w.onload = () => {
-    setTimeout(() => {
-        w.print();
-    }, 1000);
+const bg = w.document.querySelector('.bg');
+
+bg.onload = () => {
+    w.print();
 };
 
         }
