@@ -606,6 +606,16 @@ function generateAthleteId(){
   return `BRLP-MIN-${String(next).padStart(3,'0')}`;
 }
 
+function getFormattedCharterId(athlete) {
+  if (!athlete) return 'BRLP-MIN-001';
+  if (athlete.id && athlete.id.startsWith('BRLP-MIN-')) {
+    return athlete.id;
+  }
+  const idx = athletes.findIndex(a => a.id === athlete.id);
+  const num = idx >= 0 ? idx + 1 : 1;
+  return `BRLP-MIN-${String(num).padStart(3,'0')}`;
+}
+
 function generateQR(id) {
     const athlete = athletes.find(a => a.id === id);
     if (!athlete) return;
@@ -653,12 +663,13 @@ function printQR(id){
     });
 }
 
-/* ACCURATELY ALIGNED ID TEMPLATE PRINT FUNCTION */
+/* ACCURATE TEMPLATE FIT PRINT ID FUNCTION */
 function printID(id){
     const athlete = athletes.find(a => a.id === id);
     if(!athlete) return;
 
-    const athleteURL = `${location.origin}/brlpmindanao-athletes-gallery/profile.html?id=${id}`;
+    const charterId = getFormattedCharterId(athlete);
+    const athleteURL = `${location.origin}/brlpmindanao-athletes-gallery/profile.html?id=${encodeURIComponent(id)}`;
 
     QRCode.toDataURL(athleteURL, { width: 300 }, function(err, qrData){
         if(err) {
@@ -700,7 +711,7 @@ function printID(id){
             background: #ffffff;
           }
 
-          /* Template Image Layer */
+          /* Template Background Image Layer */
           .bg {
             position: absolute;
             top: 0;
@@ -711,94 +722,108 @@ function printID(id){
             z-index: 1;
           }
 
-          /* Photo fits inside template green photo frame */
+          /* Athlete Photo - Perfectly Centered in Template Green Photo Frame */
           .photo {
             position: absolute;
-            top: 258px;
-            left: 251px;
-            width: 266px;
-            height: 266px;
+            top: 248px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 260px;
+            height: 260px;
             object-fit: cover;
             border-radius: 12px;
             z-index: 2;
           }
 
-          /* Name centered right above NAME: label */
+          /* Athlete Name - Centered with Side Indentation to Fit Template Box */
           .name {
             position: absolute;
-            top: 612px;
-            left: 44px;
-            width: 688px;
+            top: 575px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 76%;
             text-align: center;
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 900;
             color: #14532D;
             text-transform: uppercase;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            padding: 0 15px;
             z-index: 2;
           }
 
-          /* Role aligned directly after ROLE: label */
+          /* Role - Centered with Side Indentation to Fit Template Box */
           .role {
             position: absolute;
-            top: 704px;
-            left: 365px;
-            width: 320px;
-            text-align: left;
-            font-size: 30px;
+            top: 662px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 76%;
+            text-align: center;
+            font-size: 26px;
             font-weight: 800;
             color: #14532D;
             text-transform: uppercase;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 15px;
             z-index: 2;
           }
 
-          /* Charter ID centered above CHARTER: label (scaled to fit long strings) */
+          /* Charter ID (BRLP-MIN-001) - Centered with Side Indentation */
           .charter {
             position: absolute;
-            top: 772px;
-            left: 250px;
-            width: 470px;
+            top: 746px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 76%;
             text-align: center;
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 26px;
+            font-weight: 800;
             color: #183326;
-            font-family: monospace, Arial, sans-serif;
+            font-family: Arial, sans-serif;
+            letter-spacing: 1px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            padding: 0 15px;
             z-index: 2;
           }
 
-          /* Division aligned directly after DIVISION: label */
+          /* Division & Sport - Centered with Side Indentation */
           .division {
             position: absolute;
-            top: 858px;
-            left: 425px;
-            width: 300px;
-            text-align: left;
-            font-size: 28px;
+            top: 830px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 76%;
+            text-align: center;
+            font-size: 26px;
             font-weight: 800;
             color: #14532D;
             text-transform: uppercase;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            padding: 0 15px;
             z-index: 2;
           }
 
-          /* QR Code positioned in bottom-left white space */
+          /* QR Code - Placed on the Lower Left Side of the ID Template */
           .qr {
             position: absolute;
-            top: 860px;
-            left: 45px;
-            width: 180px;
-            height: 180px;
+            top: 915px;
+            left: 55px;
+            width: 175px;
+            height: 175px;
             z-index: 2;
             background: #ffffff;
-            padding: 4px;
-            border-radius: 6px;
+            padding: 5px;
+            border-radius: 8px;
           }
         </style>
         </head>
@@ -811,7 +836,7 @@ function printID(id){
 
             <div class="name">${esc(athlete.name)}</div>
             <div class="role">PLAYER</div>
-            <div class="charter">${esc(athlete.id)}</div>
+            <div class="charter">${esc(charterId)}</div>
             <div class="division">${esc(athlete.sport)} • ${esc(athlete.division)}</div>
 
             <img src="${qrData}" class="qr">
