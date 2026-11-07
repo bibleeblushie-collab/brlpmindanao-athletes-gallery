@@ -555,6 +555,17 @@ dialog::backdrop{
     </div>
 
     <div class="field">
+  <label>ROLE *</label>
+  <select id="role" required>
+      <option>PLAYER</option>
+      <option>COACH</option>
+      <option>MANAGER</option>
+      <option>OFFICIAL</option>
+      <option>UMPIRE</option>
+  </select>
+</div>
+
+    <div class="field">
       <label>TEAM / LEAGUE</label>
       <input id="team" placeholder="Team name">
     </div>
@@ -662,6 +673,8 @@ function save(){
   }
 }
 
+ensureCharterNumbers();
+
 function esc(s=''){
   return String(s).replace(/[&<>"']/g,c=>({
     '&':'&amp;',
@@ -713,43 +726,79 @@ docs.forEach(url => {
 });
 }
 
-function generateAthleteId(){
+const CHARTER_COUNTER_KEY = 'brlMindanaoCharterCounter_v1';
 
-    const next = athletes.length + 1;
-
-    return `BRLP-MIN-${String(next).padStart(3,'0')}`;
-
+function formatCharterNumber(number){
+    return `BRLP-MIN-${String(number).padStart(3,'0')}`;
 }
 
-function generateQR(id) {
+// Migrate existing records once. Their internal IDs are kept unchanged.
+function ensureCharterNumbers(){
+    let counter = Number(localStorage.getItem(CHARTER_COUNTER_KEY)) || 0;
 
-    const athlete = athletes.find(a => a.id === id);
+    athletes.forEach(athlete => {
+        const match = String(athlete.charterNo || '').match(/^BRLP-MIN-(\d+)$/);
+        if(match){
+            counter = Math.max(counter, Number(match[1]));
+        }else if(!athlete.charterNo){
+            counter += 1;
+            athlete.charterNo = formatCharterNumber(counter);
+        }
+    });
 
-    if (!athlete) return;
+    localStorage.setItem(CHARTER_COUNTER_KEY, String(counter));
+    save();
+}
 
-    document.getElementById("qrName").textContent =
-        athlete.name;
+function generateCharterNumber(){
+    const current = Number(localStorage.getItem(CHARTER_COUNTER_KEY)) || 0;
+    const next = current + 1;
+    localStorage.setItem(CHARTER_COUNTER_KEY, String(next));
+    return formatCharterNumber(next);
+}
+
+function generateInternalAthleteId(){
+    return (window.crypto && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : `athlete-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function generateQR(id){
+
+    const athlete =
+    athletes.find(a => a.id === id);
+
+    if(!athlete) return;
+
+    document.getElementById("qrName")
+    .textContent = athlete.name;
 
     const athleteURL =
-        `${location.origin}${location.pathname.replace(
-            'admin.html',
-            'profile.html'
-        )}?id=${encodeURIComponent(id)}`;
+    `${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
 
-    const canvas = document.getElementById("qrCanvas");
+    const canvas =
+    document.getElementById("qrCanvas");
 
-    QRCode.toCanvas(canvas, athleteURL, {
-        width: 250
-    }, function(error) {
-        if (error) {
-            alert("Unable to generate QR code.");
-            console.error(error);
-            return;
+    canvas.getContext("2d")
+    .clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    QRCode.toCanvas(
+        canvas,
+        athleteURL,
+        {
+            width:250
         }
+    );
 
-        document.getElementById("qrDlg").showModal();
-    });
+    document.getElementById("qrDlg")
+    .showModal();
 }
+  
 function printQR(id){
 
     const athlete =
@@ -807,9 +856,8 @@ function printQR(id){
 
             w.document.close();
 
-            setTimeout(()=>{
-                w.print();
-            },500);
+            w.onload = () => w.print();
+
         }
     );
 }
@@ -840,97 +888,70 @@ function printQR(id){
 
             <style>
 
-            body{
+            *{box-sizing:border-box}
+            @page{size:A4 portrait;margin:0}
+            html,body{
                 margin:0;
-                text-align:center;
+                padding:0;
+                width:210mm;
+                height:297mm;
             }
-
+            body{text-align:center;font-family:Arial,sans-serif}
             .card{
                 position:relative;
-                width:768px;
-                height:1152px;
-                margin:auto;
+                width:210mm;
+                height:297mm;
+                overflow:hidden;
+                page-break-after:avoid;
             }
-
             .bg{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.photo,
-.name,
-.role,
-.charter,
-.division,
-.qr{
-    position:absolute;
-}
-
-            .photo{
-
                 position:absolute;
-
-                top:258px;
-                left:243px;
-
-                width:280px;
-                height:280px;
-
+                inset:0;
+                width:100%;
+                height:100%;
+                display:block;
+            }
+            .photo{
+                position:absolute;
+                top:23%;
+                left:30.6%;
+                width:37.7%;
+                height:28%;
                 object-fit:cover;
                 border-radius:8px;
             }
-
-            .name{
+            .idtext{
                 position:absolute;
-                top:635px;
-                left:250px;
-                width:470px;
+                left:4.8%;
+                width:90.4%;
+                height:5.35%;
+                display:flex;
+                align-items:center;
+                justify-content:center;
                 text-align:center;
-                font-size:38px;
-                font-weight:bold;
+                white-space:nowrap;
+                overflow:hidden;
+                line-height:1;
                 font-family:Georgia,serif;
+                font-weight:700;
+                padding:0 2%;
             }
-
-            .role{
-                position:absolute;
-                top:730px;
-                left:270px;
-                width:470px;
-                text-align:center;
-                font-size:42px;
-                font-weight:bold;
-            }
-
-            .charter{
-                position:absolute;
-                top:815px;
-                left:250px;
-                width:500px;
-                text-align:center;
-                font-size:38px;
-                font-weight:bold;
-            }
-
-            .division{
-                position:absolute;
-                top:900px;
-                left:250px;
-                width:500px;
-                text-align:center;
-                font-size:42px;
-                font-weight:bold;
-            }
-
+            .name{top:52.1%;font-size:clamp(18px,3.2vw,29px)}
+            .role{top:57.8%;font-size:clamp(20px,3.5vw,31px)}
+            .charter{top:63.4%;font-size:clamp(17px,2.9vw,26px)}
+            .division{top:68.9%;font-size:clamp(20px,3.5vw,31px)}
             .qr{
                 position:absolute;
-                left:38px;
-                bottom:60px;
-                width:230px;
-                height:230px;
+                left:4.5%;
+                bottom:5.5%;
+                width:29%;
+                height:auto;
+                aspect-ratio:1;
+                object-fit:contain;
+            }
+            @media print{
+                html,body{width:210mm;height:297mm}
+                .card{width:210mm;height:297mm}
             }
 
             </style>
@@ -942,7 +963,7 @@ function printQR(id){
             <div class="card">
 
                 <img
-src="${location.origin}/brlpmindanao-athletes-gallery/id-template.png"
+src="https://bibleeblushie-collab.github.io/brlpmindanao-athletes-gallery/id-template.png"
 class="bg">
 
                 ${
@@ -951,21 +972,10 @@ class="bg">
                     : ''
                 }
 
-                <div class="name">
-                    ${athlete.name}
-                </div>
-
-                <div class="role">
-                    PLAYER
-                </div>
-
-                <div class="charter">
-                    ${athlete.id}
-                </div>
-
-                <div class="division">
-                    ${athlete.division}
-                </div>
+                <div class="idtext name">${esc(athlete.name || '')}</div>
+                <div class="idtext role">${esc(athlete.role || 'PLAYER')}</div>
+                <div class="idtext charter">${esc(athlete.charterNo || '')}</div>
+                <div class="idtext division">${esc(athlete.division || '')}</div>
 
                 <img
                 src="${qrData}"
@@ -978,12 +988,13 @@ class="bg">
             </html>
             `);
 
-           w.document.close();
+            w.document.close();
 
-setTimeout(() => {
-    w.focus();
-    w.print();
-}, 2000);
+           w.onload = () => {
+    setTimeout(() => {
+        w.print();
+    }, 1000);
+};
 
         }
     );
@@ -1077,7 +1088,7 @@ onclick="event.stopPropagation();generateQR('${a.id}')">
 QR
 </button>
 
-<button class="btn dark"
+<button class="btn light"
 onclick="event.stopPropagation();printID('${a.id}')">
 Print ID
 </button>
@@ -1117,11 +1128,16 @@ function openForm(a=null){
       a ? 'Edit Athlete Profile'
         : 'Add Athlete Profile';
 
-   if(a){
+ if(a){
 
       $('name').value = a.name || '';
       $('sportInput').value = a.sport || 'Baseball';
       $('divisionInput').value = a.division || '8U';
+      $('role').value = a.role || 'PLAYER';
+}
+else{
+      $('role').value = 'PLAYER';
+}
       $('team').value = a.team || '';
       $('position').value = a.position || '';
       $('jersey').value = a.jersey || '';
@@ -1129,12 +1145,6 @@ function openForm(a=null){
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
 
-      $('birthCert').value = a.birthCert || '';
-      $('schoolId').value = a.schoolId || '';
-      $('medicalCert').value = a.medicalCert || '';
-      $('consentForm').value = a.consentForm || '';
-      $('waiverForm').value = a.waiverForm || '';
-   }
 
    dlg.showModal();
 }
@@ -1189,10 +1199,12 @@ $('athleteForm').addEventListener('submit',async e=>{
   }
 
   const a={
-  id:id || generateAthleteId(),
+  id:id || generateInternalAthleteId(),
+  charterNo:old?.charterNo || generateCharterNumber(),
   name:$('name').value.trim(),
   sport:$('sportInput').value,
   division:$('divisionInput').value,
+  role:$('role').value,
   team:$('team').value.trim(),
   position:$('position').value.trim(),
   jersey:$('jersey').value.trim(),
@@ -1330,6 +1342,7 @@ function viewProfile(id){
                 ${esc(a.sport)} |
                 ${esc(a.division)}
             </p>
+            <p><b>Charter No.:</b> ${esc(a.charterNo || '')}</p>
 
         </div>
 
