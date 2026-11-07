@@ -639,6 +639,34 @@ dialog::backdrop{
 
 <script>
 
+  function generateQR(id){
+
+    const athlete = athletes.find(
+        a => a.id === id
+    );
+
+    if(!athlete) return;
+
+    const url =
+    location.origin +
+    location.pathname.replace(
+        "admin.html",
+        "profile.html"
+    ) +
+    "?id=" + id;
+
+    QRCode.toCanvas(
+        document.getElementById("qrCanvas"),
+        url,
+        {
+            width:250
+        }
+    );
+
+    document.getElementById("qrDlg")
+    .showModal();
+}
+
  console.log(
     "isAdmin=",
     sessionStorage.getItem("isAdmin")
@@ -1167,6 +1195,30 @@ document.addEventListener("DOMContentLoaded", () => {
             Close
         </button>
     </div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<dialog id="qrDlg">
+
+<div class="modalhead">
+<h2>Athlete QR Code</h2>
+</div>
+
+<div style="padding:20px;text-align:center">
+
+<canvas id="qrCanvas"></canvas>
+
+</div>
+
+<div style="padding:20px;text-align:right">
+
+<button class="btn light"
+onclick="document.getElementById('qrDlg').close()">
+Close
+</button>
+
+</div>
+
 </dialog>
 
 </body>
