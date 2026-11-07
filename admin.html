@@ -728,8 +728,8 @@ function generateQR(id){
 
     if(!athlete) return;
 
-    document.getElementById("qrName")
-    .textContent = athlete.name;
+    document.getElementById("qrName").textContent =
+    athlete.name;
 
     const athleteURL =
     `${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
@@ -747,12 +747,37 @@ function generateQR(id){
     QRCode.toCanvas(
         canvas,
         athleteURL,
-        { width:250 }
+        {
+            width:250
+        }
     );
 
     document.getElementById("qrDlg")
     .showModal();
 }
+   const athleteURL =
+`${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
+
+
+    const canvas =
+    document.getElementById("qrCanvas");
+
+    canvas.getContext("2d")
+    .clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    QRCode.toCanvas(
+        canvas,
+        athleteURL,
+        {
+            width:250
+        }
+    );
+
     document.getElementById("qrDlg")
     .showModal();
 }
