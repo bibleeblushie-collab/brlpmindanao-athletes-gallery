@@ -555,17 +555,6 @@ dialog::backdrop{
     </div>
 
     <div class="field">
-  <label>ROLE *</label>
-  <select id="role" required>
-      <option>PLAYER</option>
-      <option>COACH</option>
-      <option>MANAGER</option>
-      <option>OFFICIAL</option>
-      <option>UMPIRE</option>
-  </select>
-</div>
-
-    <div class="field">
       <label>TEAM / LEAGUE</label>
       <input id="team" placeholder="Team name">
     </div>
@@ -726,13 +715,12 @@ docs.forEach(url => {
 
 function generateAthleteId(){
 
-    const next = athletes.length + 1;
+    const next =
+    athletes.length + 1;
 
     return `BRLP-MIN-${String(next).padStart(3,'0')}`;
 
 }
-
-function generateQR(id){
 
     const athlete =
     athletes.find(a => a.id === id);
@@ -742,8 +730,9 @@ function generateQR(id){
     document.getElementById("qrName")
     .textContent = athlete.name;
 
-    const athleteURL =
-    `${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
+   const athleteURL =
+`${location.origin}${location.pathname.replace('admin.html','profile.html')}?id=${id}`;
+
 
     const canvas =
     document.getElementById("qrCanvas");
@@ -767,7 +756,7 @@ function generateQR(id){
     document.getElementById("qrDlg")
     .showModal();
 }
-  
+
 function printQR(id){
 
     const athlete =
@@ -961,8 +950,8 @@ function printQR(id){
                 </div>
 
                 <div class="role">
-    ${athlete.role || 'PLAYER'}
-</div>
+                    PLAYER
+                </div>
 
                 <div class="charter">
                     ${athlete.id}
@@ -1081,7 +1070,7 @@ onclick="event.stopPropagation();generateQR('${a.id}')">
 QR
 </button>
 
-<button class="btn light"
+<button class="btn dark"
 onclick="event.stopPropagation();printID('${a.id}')">
 Print ID
 </button>
@@ -1121,23 +1110,24 @@ function openForm(a=null){
       a ? 'Edit Athlete Profile'
         : 'Add Athlete Profile';
 
- if(a){
+   if(a){
 
       $('name').value = a.name || '';
       $('sportInput').value = a.sport || 'Baseball';
       $('divisionInput').value = a.division || '8U';
-      $('role').value = a.role || 'PLAYER';
-
       $('team').value = a.team || '';
       $('position').value = a.position || '';
       $('jersey').value = a.jersey || '';
       $('city').value = a.city || '';
       $('season').value = a.season || '';
       $('bio').value = a.bio || '';
-}
-else{
-      $('role').value = 'PLAYER';
-}
+
+      $('birthCert').value = a.birthCert || '';
+      $('schoolId').value = a.schoolId || '';
+      $('medicalCert').value = a.medicalCert || '';
+      $('consentForm').value = a.consentForm || '';
+      $('waiverForm').value = a.waiverForm || '';
+   }
 
    dlg.showModal();
 }
@@ -1196,7 +1186,6 @@ $('athleteForm').addEventListener('submit',async e=>{
   name:$('name').value.trim(),
   sport:$('sportInput').value,
   division:$('divisionInput').value,
-  role:$('role').value,
   team:$('team').value.trim(),
   position:$('position').value.trim(),
   jersey:$('jersey').value.trim(),
