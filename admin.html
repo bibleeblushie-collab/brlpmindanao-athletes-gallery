@@ -597,10 +597,14 @@ function save(){
 
 function esc(s=''){
   return String(s).replace(/[&<>"']/g, c => ({
-    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
   }[c]));
 }
-
+  
 function generateAthleteId(){
   const next = athletes.length + 1;
   return `BRLP-MIN-${String(next).padStart(3,'0')}`;
@@ -705,7 +709,36 @@ function printID(id){
         .division { position: absolute; top: 205mm; left: 50%; transform: translateX(-50%); width: 76%; text-align: center; font-size: 8.5mm; font-weight: 800; color: #14532D; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4mm; z-index: 2; }
         .qr { position: absolute; top: 230mm; left: 6.5mm; width: 60mm; height: 60mm; z-index: 2; background: #ffffff; padding: 1.5mm; border-radius: 2mm; }
       </style>
-      </head>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAhcWEoisQPkmBQ4ICgnyv0uBWIFE-VxiA",
+  authDomain: "brlp-mindanao-athletes-gallery.firebaseapp.com",
+  projectId: "brlp-mindanao-athletes-gallery",
+  storageBucket: "brlp-mindanao-athletes-gallery.firebasestorage.app",
+  messagingSenderId: "801559007324",
+  appId: "1:801559007324:web:f05b77f0c5aabbfc665699",
+  measurementId: "G-RDBEBX13XV"
+};
+
+const app = initializeApp(firebaseConfig);
+
+window.db = getFirestore(app);
+window.doc = doc;
+window.setDoc = setDoc;
+
+console.log("Firebase Connected");
+</script>
+
+</head>
       <body>
       <div class="card">
         <img src="${templateUrl}" class="bg" id="bgTemplate">
