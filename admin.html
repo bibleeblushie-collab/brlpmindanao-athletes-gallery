@@ -328,4 +328,81 @@ dialog::backdrop{
 
 .field label{
   font-size:12px;
-  font-weight:80
+  font-weight:800;
+  color:#586B5D;
+}
+
+.field input,
+.field select,
+.field textarea{
+  padding:11px;
+  border:1px solid #D6E3D8;
+  border-radius:8px;
+  width:100%;
+  background:#fff;
+  color:var(--ink);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  outline:2px solid #23813B;
+  border-color:#23813B;
+}
+
+.field textarea{
+  resize:vertical;
+}
+
+.formbuttons{
+  grid-column:1/-1;
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  margin-top:8px;
+}
+
+.hint{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.logo{
+  width:150px;
+  height:150px;
+  object-fit:contain;
+  flex-shrink:0;
+}
+
+.header-brand{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:15px;
+  position:relative;
+  z-index:2;
+  text-align:left;
+}
+
+@media(max-width:600px){
+  .stats{gap:8px}
+  .stat{padding:13px}
+  .stat strong{font-size:22px}
+  .form{grid-template-columns:1fr}
+  .field.full{grid-column:auto}
+  .sectionhead{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .header-brand{
+    flex-direction:column;
+    text-align:center;
+  }
+  .logo{
+    width:60px;
+    height:60px;
+  }
+}
+</style>
+</head>
+<body>
