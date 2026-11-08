@@ -57,8 +57,9 @@ const waiverForm = getQueryParam('waiverForm');
 
 const card = document.getElementById('profileCard');
 
-if (!name) {
+if (!id) {
   card.innerHTML = `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
+}
 } else {
   card.innerHTML = `
     <div class="header">
