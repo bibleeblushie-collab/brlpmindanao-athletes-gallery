@@ -595,13 +595,9 @@ function save(){
   }
 }
 
-function esc(s = '') {
+function esc(s=''){
   return String(s).replace(/[&<>"']/g, c => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
   }[c]));
 }
 
@@ -621,7 +617,26 @@ function getFormattedCharterId(athlete) {
 }
 
 function getAthleteShareUrl(athlete) {
-    return `${window.location.origin}${window.location.pathname.replace('admin.html','profile.html')}?id=${athlete.id}`;
+  if (!athlete) return '';
+  const params = new URLSearchParams({
+    id: getFormattedCharterId(athlete),
+    name: athlete.name || '',
+    sport: athlete.sport || '',
+    division: athlete.division || '',
+    team: athlete.team || '',
+    position: athlete.position || '',
+    jersey: athlete.jersey || '',
+    city: athlete.city || '',
+    season: athlete.season || '',
+    bio: athlete.bio || '',
+    photo: athlete.photo && athlete.photo.startsWith('http') ? athlete.photo : '',
+    birthCert: athlete.birthCert || '',
+    schoolId: athlete.schoolId || '',
+    medicalCert: athlete.medicalCert || '',
+    consentForm: athlete.consentForm || '',
+    waiverForm: athlete.waiverForm || ''
+  });
+  return new URL(`profile.html?${params.toString()}`, window.location.href).href;
 }
 
 function generateQR(id) {
@@ -647,7 +662,7 @@ function printQR(id){
   if(!athlete) return;
 
   const athleteURL = getAthleteShareUrl(athlete);
-console.log("URL length:", athleteURL.length);
+
   QRCode.toDataURL(athleteURL, function(err, url){
     const w = window.open('', '_blank');
     w.document.write(`
