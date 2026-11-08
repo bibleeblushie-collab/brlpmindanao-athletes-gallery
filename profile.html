@@ -23,6 +23,7 @@
 <div class="card" id="profileCard">Loading profile...</div>
 
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
 
 import {
@@ -44,59 +45,73 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-function getQueryParam(key){
-  return new URLSearchParams(window.location.search).get(key);
-}
+const params = new URLSearchParams(window.location.search);
+const athleteId = params.get("id");
 
-const athleteId = getQueryParam('id');
+const card = document.getElementById("profileCard");
 
 async function loadAthlete() {
 
-  const card = document.getElementById('profileCard');
-
-  if(!athleteId){
-    card.innerHTML = "<h2>Athlete not found.</h2>";
-    return;
-  }
-
-  try {
-
-    const athleteRef = doc(db, "athletes", athleteId);
-
-    const athleteSnap = await getDoc(athleteRef);
-
-    if(!athleteSnap.exists()) {
-      card.innerHTML = "<h2>Athlete not found.</h2>";
-      return;
+    if (!athleteId) {
+        card.innerHTML =
+        `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
+        return;
     }
 
-    const athlete = athleteSnap.data();
+    try {
 
-    card.innerHTML = `
-      <div class="header">
-        ${athlete.photo ? `<img src="${athlete.photo}" class="photo">` : '⚾'}
-        <h1>${athlete.name}</h1>
-        <div class="subtitle">${athlete.sport} • ${athlete.division}</div>
-        <small>Charter ID: ${athlete.id}</small>
-      </div>
+        const athleteRef = doc(db, "athletes", athleteId);
 
-      <table>
-        <tr><td>Team</td><td>${athlete.team || 'N/A'}</td></tr>
-        <tr><td>Position</td><td>${athlete.position || 'N/A'}</td></tr>
-        <tr><td>Jersey</td><td>${athlete.jersey || 'N/A'}</td></tr>
-        <tr><td>City</td><td>${athlete.city || 'N/A'}</td></tr>
-        <tr><td>Season</td><td>${athlete.season || 'N/A'}</td></tr>
-        <tr><td>Bio</td><td>${athlete.bio || 'N/A'}</td></tr>
-      </table>
-    `;
+        const athleteSnap = await getDoc(athleteRef);
 
-  } catch(err) {
-    console.error(err);
-    card.innerHTML = "<h2>Error loading athlete.</h2>";
-  }
+        if (!athleteSnap.exists()) {
+            card.innerHTML =
+            `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
+            return;
+        }
+
+        const athlete = athleteSnap.data();
+
+        card.innerHTML = `
+          <div class="header">
+            ${
+              athlete.photo
+                ? `<img src="${athlete.photo}" class="photo">`
+                : `<div style="font-size:64px;">⚾</div>`
+            }
+
+            <h1>${athlete.name || ''}</h1>
+
+            <div class="subtitle">
+              ${athlete.sport || ''} • ${athlete.division || ''}
+            </div>
+
+            <small style="color:#65766B;">
+              Charter ID: ${athlete.id || athleteId}
+            </small>
+          </div>
+
+          <table>
+            <tr><td>Team / League</td><td>${athlete.team || 'N/A'}</td></tr>
+            <tr><td>Position</td><td>${athlete.position || 'N/A'}</td></tr>
+            <tr><td>Jersey #</td><td>${athlete.jersey || 'N/A'}</td></tr>
+            <tr><td>City / Province</td><td>${athlete.city || 'N/A'}</td></tr>
+            <tr><td>Season</td><td>${athlete.season || 'N/A'}</td></tr>
+            <tr><td>Bio</td><td>${athlete.bio || 'N/A'}</td></tr>
+          </table>
+        `;
+
+    } catch (error) {
+
+        console.error(error);
+
+        card.innerHTML =
+        `<h2 style="text-align:center;color:#D62828;">Error loading profile.</h2>`;
+    }
 }
 
 loadAthlete();
+
 </script>
 
 function esc(s = '') {
