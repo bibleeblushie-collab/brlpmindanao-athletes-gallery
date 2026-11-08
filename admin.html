@@ -905,6 +905,22 @@ $('athleteForm').addEventListener('submit', async e => {
     waiverForm: $('waiverForm').value.trim(),
     photo: photoData
   };
+try {
+
+  await setDoc(
+    doc(db, "athletes", a.id),
+    a
+  );
+
+  console.log("Athlete saved to Firestore");
+
+} catch(error) {
+
+  console.error("Firestore Error:", error);
+
+}
+
+  
 
   if(old) athletes = athletes.map(x => x.id === id ? a : x);
   else athletes.unshift(a);
