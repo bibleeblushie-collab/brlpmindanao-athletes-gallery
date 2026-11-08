@@ -681,6 +681,33 @@ function printQR(id){
       <head>
       <title>${esc(athlete.name)}</title>
       <style>body{ font-family:Arial; text-align:center; padding:30px; } img{ width:250px; }</style>
+
+    <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAhcWEoisQPkmBQ4ICgnyv0uBWIFE-VxiA",
+  authDomain: "brlp-mindanao-athletes-gallery.firebaseapp.com",
+  projectId: "brlp-mindanao-athletes-gallery",
+  storageBucket: "brlp-mindanao-athletes-gallery.firebasestorage.app",
+  messagingSenderId: "801559007324",
+  appId: "1:801559007324:web:f05b77f0c5aabbfc665699",
+  measurementId: "G-RDBEBX13XV"
+};
+
+const app = initializeApp(firebaseConfig);
+
+window.db = getFirestore(app);
+window.doc = doc;
+window.setDoc = setDoc;
+</script>
+  
       </head>
       <body>
         <h2>${esc(athlete.name)}</h2>
