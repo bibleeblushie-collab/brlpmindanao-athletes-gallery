@@ -23,84 +23,10 @@
 <div class="card" id="profileCard">Loading profile...</div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const athleteId = params.get("id");
-
-const athletes = JSON.parse(
-  localStorage.getItem("brlMindanaoAthletes_v1") || "[]"
-);
-
-const athlete = athletes.find(a => a.id === athleteId);
-
-const card = document.getElementById("profileCard");
-
-if (!athlete) {
-
-  card.innerHTML = `
-    <h2 style="text-align:center;color:#D62828;">
-      Athlete profile not found.
-    </h2>
-  `;
-
-} else {
-
-  card.innerHTML = `
-    <div class="header">
-
-      ${
-        athlete.photo
-          ? `<img src="${athlete.photo}" class="photo">`
-          : `<div style="font-size:64px;">⚾</div>`
-      }
-
-      <h1>${athlete.name}</h1>
-
-      <div class="subtitle">
-        ${athlete.sport} • ${athlete.division}
-      </div>
-
-      <small style="color:#65766B;">
-        Charter ID: ${athlete.id}
-      </small>
-
-    </div>
-
-    <table>
-      <tr>
-        <td>Team / League</td>
-        <td>${athlete.team || 'N/A'}</td>
-      </tr>
-
-      <tr>
-        <td>Position</td>
-        <td>${athlete.position || 'N/A'}</td>
-      </tr>
-
-      <tr>
-        <td>Jersey #</td>
-        <td>${athlete.jersey || 'N/A'}</td>
-      </tr>
-
-      <tr>
-        <td>City / Province</td>
-        <td>${athlete.city || 'N/A'}</td>
-      </tr>
-
-      <tr>
-        <td>Season</td>
-        <td>${athlete.season || 'N/A'}</td>
-      </tr>
-
-      <tr>
-        <td>Bio</td>
-        <td>${athlete.bio || 'N/A'}</td>
-      </tr>
-    </table>
-  `;
+function getQueryParam(key) {
+  return new URLSearchParams(window.location.search).get(key) || '';
 }
-</script>
 
-  
 function esc(s = '') {
   return String(s).replace(/[&<>"']/g, c => ({
     '&': '&amp;',
@@ -111,38 +37,56 @@ function esc(s = '') {
   }[c]));
 }
 
+// 1. Read URL Query Parameters
 const id = getQueryParam('id');
-const name = getQueryParam('name');
-const sport = getQueryParam('sport');
-const division = getQueryParam('division');
-const team = getQueryParam('team');
-const position = getQueryParam('position');
-const jersey = getQueryParam('jersey');
-const city = getQueryParam('city');
-const season = getQueryParam('season');
-const bio = getQueryParam('bio');
-const photo = getQueryParam('photo');
-console.log(photo);
-const birthCert = getQueryParam('birthCert');
-const schoolId = getQueryParam('schoolId');
-const medicalCert = getQueryParam('medicalCert');
-const consentForm = getQueryParam('consentForm');
-const waiverForm = getQueryParam('waiverForm');
+let name = getQueryParam('name');
+let sport = getQueryParam('sport');
+let division = getQueryParam('division');
+let team = getQueryParam('team');
+let position = getQueryParam('position');
+let jersey = getQueryParam('jersey');
+let city = getQueryParam('city');
+let season = getQueryParam('season');
+let bio = getQueryParam('bio');
+let photo = getQueryParam('photo');
+let birthCert = getQueryParam('birthCert');
+let schoolId = getQueryParam('schoolId');
+let medicalCert = getQueryParam('medicalCert');
+let consentForm = getQueryParam('consentForm');
+let waiverForm = getQueryParam('waiverForm');
+
+// 2. Fallback to LocalStorage if only 'id' was provided in the URL
+if (!name && id) {
+  const localData = JSON.parse(localStorage.getItem("brlMindanaoAthletes_v1") || "[]");
+  const localAthlete = localData.find(a => a.id === id);
+  if (localAthlete) {
+    name = localAthlete.name || '';
+    sport = localAthlete.sport || '';
+    division = localAthlete.division || '';
+    team = localAthlete.team || '';
+    position = localAthlete.position || '';
+    jersey = localAthlete.jersey || '';
+    city = localAthlete.city || '';
+    season = localAthlete.season || '';
+    bio = localAthlete.bio || '';
+    photo = localAthlete.photo || '';
+    birthCert = localAthlete.birthCert || '';
+    schoolId = localAthlete.schoolId || '';
+    medicalCert = localAthlete.medicalCert || '';
+    consentForm = localAthlete.consentForm || '';
+    waiverForm = localAthlete.waiverForm || '';
+  }
+}
 
 const card = document.getElementById('profileCard');
-console.log("ID:", id);
-console.log("NAME:", name);
-console.log("PHOTO:", photo);
 
-if (!id) {
+if (!name && !id) {
   card.innerHTML = `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
-}
 } else {
   card.innerHTML = `
     <div class="header">
-     <div class="header">
-  ${photo ? `<img src="${photo}" class="photo">` : `<div style="font-size:64px;">⚾</div>`}
-      <h1>${esc(name)}</h1>
+      ${photo ? `<img src="${esc(photo)}" class="photo">` : `<div style="font-size:64px;">⚾</div>`}
+      <h1>${esc(name || 'Athlete Profile')}</h1>
       <div class="subtitle">${esc(sport)} • ${esc(division)}</div>
       <small style="color:#65766B;">Charter ID: ${esc(id)}</small>
     </div>
