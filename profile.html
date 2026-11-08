@@ -28,7 +28,13 @@ function getQueryParam(key) {
 }
 
 function esc(s = '') {
-  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[c]));
 }
 
 const id = getQueryParam('id');
@@ -56,7 +62,8 @@ if (!name) {
 } else {
   card.innerHTML = `
     <div class="header">
-      ${photo ? `<img src="${esc(photo)}" class="photo">` : `<div style="font-size:64px;">⚾</div>`}
+     <div class="header">
+  ${photo ? `<img src="${photo}" class="photo">` : `<div style="font-size:64px;">⚾</div>`}
       <h1>${esc(name)}</h1>
       <div class="subtitle">${esc(sport)} • ${esc(division)}</div>
       <small style="color:#65766B;">Charter ID: ${esc(id)}</small>
