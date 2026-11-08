@@ -621,10 +621,7 @@ function getFormattedCharterId(athlete) {
 }
 
 function getAthleteShareUrl(athlete) {
-  return new URL(
-    `profile.html?id=${encodeURIComponent(athlete.id)}`,
-    window.location.href
-  ).href;
+    return `${window.location.origin}${window.location.pathname.replace('admin.html','profile.html')}?id=${athlete.id}`;
 }
 
 function generateQR(id) {
