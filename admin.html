@@ -629,7 +629,7 @@ function getAthleteShareUrl(athlete) {
     city: athlete.city || '',
     season: athlete.season || '',
     bio: athlete.bio || '',
-    photo: athlete.photo && athlete.photo.startsWith('http') ? athlete.photo : '',
+    photo: athlete.photo || '',
     birthCert: athlete.birthCert || '',
     schoolId: athlete.schoolId || '',
     medicalCert: athlete.medicalCert || '',
