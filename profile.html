@@ -56,6 +56,9 @@ const consentForm = getQueryParam('consentForm');
 const waiverForm = getQueryParam('waiverForm');
 
 const card = document.getElementById('profileCard');
+console.log("ID:", id);
+console.log("NAME:", name);
+console.log("PHOTO:", photo);
 
 if (!id) {
   card.innerHTML = `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
