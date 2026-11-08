@@ -15,7 +15,7 @@
     td { padding: 10px 0; border-bottom: 1px solid #E0EAE2; }
     td:first-child { font-weight: bold; color: #586B5D; width: 35%; }
     .docs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
-    .btn { background: #14532D; color: white; padding: 8px 14px; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold; display:inline-block; }
+    .btn { background: #14532D; color: white; padding: 8px 14px; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -29,11 +29,15 @@ function getQueryParam(key) {
 
 function esc(s = '') {
   return String(s).replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
   }[c]));
 }
 
-// 1. Check URL parameters (Works on Mobile QR Code Scans)
+// 1. Read URL Query Parameters
 const id = getQueryParam('id');
 let name = getQueryParam('name');
 let sport = getQueryParam('sport');
@@ -51,26 +55,26 @@ let medicalCert = getQueryParam('medicalCert');
 let consentForm = getQueryParam('consentForm');
 let waiverForm = getQueryParam('waiverForm');
 
-// 2. Check local storage fallback (Works on Desktop/Host device)
+// 2. Fallback to LocalStorage if only 'id' was provided in the URL
 if (!name && id) {
-  const localAthletes = JSON.parse(localStorage.getItem('brlMindanaoAthletes_v1') || '[]');
-  const localMatch = localAthletes.find(a => a.id === id);
-  if (localMatch) {
-    name = localMatch.name;
-    sport = localMatch.sport;
-    division = localMatch.division;
-    team = localMatch.team;
-    position = localMatch.position;
-    jersey = localMatch.jersey;
-    city = localMatch.city;
-    season = localMatch.season;
-    bio = localMatch.bio;
-    photo = localMatch.photo;
-    birthCert = localMatch.birthCert;
-    schoolId = localMatch.schoolId;
-    medicalCert = localMatch.medicalCert;
-    consentForm = localMatch.consentForm;
-    waiverForm = localMatch.waiverForm;
+  const localData = JSON.parse(localStorage.getItem("brlMindanaoAthletes_v1") || "[]");
+  const localAthlete = localData.find(a => a.id === id);
+  if (localAthlete) {
+    name = localAthlete.name || '';
+    sport = localAthlete.sport || '';
+    division = localAthlete.division || '';
+    team = localAthlete.team || '';
+    position = localAthlete.position || '';
+    jersey = localAthlete.jersey || '';
+    city = localAthlete.city || '';
+    season = localAthlete.season || '';
+    bio = localAthlete.bio || '';
+    photo = localAthlete.photo || '';
+    birthCert = localAthlete.birthCert || '';
+    schoolId = localAthlete.schoolId || '';
+    medicalCert = localAthlete.medicalCert || '';
+    consentForm = localAthlete.consentForm || '';
+    waiverForm = localAthlete.waiverForm || '';
   }
 }
 
@@ -81,7 +85,7 @@ if (!name && !id) {
 } else {
   card.innerHTML = `
     <div class="header">
-      ${photo ? `<img src="${photo}" class="photo">` : `<div style="font-size:64px;">⚾</div>`}
+      ${photo ? `<img src="${esc(photo)}" class="photo">` : `<div style="font-size:64px;">⚾</div>`}
       <h1>${esc(name || 'Athlete Profile')}</h1>
       <div class="subtitle">${esc(sport)} • ${esc(division)}</div>
       <small style="color:#65766B;">Charter ID: ${esc(id)}</small>
