@@ -62,7 +62,6 @@ function esc(s = '') {
 }
 
 const id = getQueryParam('id');
-const name = getQueryParam('name');
 const sport = getQueryParam('sport');
 const division = getQueryParam('division');
 const team = getQueryParam('team');
@@ -71,7 +70,15 @@ const jersey = getQueryParam('jersey');
 const city = getQueryParam('city');
 const season = getQueryParam('season');
 const bio = getQueryParam('bio');
-const photo = getQueryParam('photo');
+const KEY = "brlMindanaoAthletes_v1";
+
+const athleteId = getQueryParam("id");
+
+const athletes =
+  JSON.parse(localStorage.getItem(KEY) || "[]");
+
+const athlete =
+  athletes.find(a => a.id === athleteId);
 console.log("PHOTO:", photo);
 
 const birthCert = getQueryParam('birthCert');
