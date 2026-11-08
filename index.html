@@ -78,69 +78,27 @@ button:hover{
   <h2>Administrator Login</h2>
   <div id="errorMsg" class="error-msg">Invalid email or password.</div>
 
-  <form id="loginForm">
+  <form id="loginForm" onsubmit="login(event)">
     <input type="email" id="email" placeholder="Email" required>
     <input type="password" id="password" placeholder="Password" required>
-    <button type="submit" id="loginBtn">Login</button>
+    <button type="submit">Login</button>
   </form>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-analytics.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
-
-  // Your Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyAhcWEoisQPkmBQ4ICgnyv0uBWIFE-VxiA",
-    authDomain: "brlp-mindanao-athletes-gallery.firebaseapp.com",
-    projectId: "brlp-mindanao-athletes-gallery",
-    storageBucket: "brlp-mindanao-athletes-gallery.firebasestorage.app",
-    messagingSenderId: "801559007324",
-    appId: "1:801559007324:web:f05b77f0c5aabbfc665699",
-    measurementId: "G-RDBEBX13XV"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth = getAuth(app);
-
-  const loginForm = document.getElementById("loginForm");
+<script>
+function login(e){
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
   const errorMsg = document.getElementById("errorMsg");
-  const loginBtn = document.getElementById("loginBtn");
 
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    errorMsg.style.display = "none";
-    loginBtn.disabled = true;
-    loginBtn.textContent = "Authenticating...";
-
-    try {
-      // Authenticate via Firebase Authentication
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
-      sessionStorage.setItem("isAdmin", "true");
-      window.location.href = "admin.html";
-    } catch (error) {
-      console.warn("Firebase Auth Error:", error.message);
-
-      // Fallback check for local development credentials
-      if (email === "admin@brlmindanao.com" && password === "Admin123") {
-        sessionStorage.setItem("isAdmin", "true");
-        window.location.href = "admin.html";
-        return;
-      }
-
-      errorMsg.style.display = "block";
-      loginBtn.disabled = false;
-      loginBtn.textContent = "Login";
-    }
-  });
+  if (email === "admin@brlmindanao.com" && password === "Admin123") {
+    sessionStorage.setItem("isAdmin", "true");
+    window.location.href = "admin.html";
+  } else {
+    errorMsg.style.display = "block";
+  }
+}
 </script>
 
 </body>
