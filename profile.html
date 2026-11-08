@@ -8,9 +8,7 @@
     body { font-family: Inter, Segoe UI, sans-serif; background: #F7FAF7; color: #183326; margin: 0; padding: 20px; }
     .card { max-width: 600px; margin: 20px auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-top: 6px solid #14532D; }
     .header { text-align: center; }
-    .photo-container { width: 180px; height: 180px; margin: 0 auto 12px; position: relative; }
-    .photo { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 4px solid #14532D; display: block; }
-    .photo-fallback { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #14532D; background: #EAF4EC; display: flex; align-items: center; justify-content: center; font-size: 64px; }
+    .photo { width: 180px; height: 180px; object-fit: cover; border-radius: 50%; border: 4px solid #14532D; margin-bottom: 12px; }
     h1 { margin: 8px 0 4px; color: #14532D; }
     .subtitle { color: #65766B; font-weight: 700; text-transform: uppercase; font-size: 14px; }
     table { width: 100%; margin-top: 20px; border-collapse: collapse; }
@@ -18,101 +16,98 @@
     td:first-child { font-weight: bold; color: #586B5D; width: 35%; }
     .docs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
     .btn { background: #14532D; color: white; padding: 8px 14px; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold; }
-    .debug-link { display: block; font-size: 11px; color: #D62828; margin-top: 6px; text-decoration: underline; }
   </style>
 </head>
 <body>
 
 <div class="card" id="profileCard">Loading profile...</div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAhcWEoisQPkmBQ4ICgnyv0uBWIFE-VxiA",
-  authDomain: "brlp-mindanao-athletes-gallery.firebaseapp.com",
-  projectId: "brlp-mindanao-athletes-gallery",
-  storageBucket: "brlp-mindanao-athletes-gallery.firebasestorage.app",
-  messagingSenderId: "801559007324",
-  appId: "1:801559007324:web:f05b77f0c5aabbfc665699",
-  measurementId: "G-RDBEBX13XV"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
+<script>
 function getQueryParam(key) {
   return new URLSearchParams(window.location.search).get(key) || '';
 }
 
-// Safely escape text values without breaking web URLs
-function escText(s = '') {
+function esc(s = '') {
   return String(s).replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
   }[c]));
 }
 
-async function loadProfile() {
-  const card = document.getElementById('profileCard');
-  const id = getQueryParam('id');
+// 1. Read URL Query Parameters
+const id = getQueryParam('id');
+let name = getQueryParam('name');
+let sport = getQueryParam('sport');
+let division = getQueryParam('division');
+let team = getQueryParam('team');
+let position = getQueryParam('position');
+let jersey = getQueryParam('jersey');
+let city = getQueryParam('city');
+let season = getQueryParam('season');
+let bio = getQueryParam('bio');
+let photo = getQueryParam('photo');
+let birthCert = getQueryParam('birthCert');
+let schoolId = getQueryParam('schoolId');
+let medicalCert = getQueryParam('medicalCert');
+let consentForm = getQueryParam('consentForm');
+let waiverForm = getQueryParam('waiverForm');
 
-  if (!id) {
-    card.innerHTML = `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
-    return;
+// 2. Fallback to LocalStorage if only 'id' was provided in the URL
+if (!name && id) {
+  const localData = JSON.parse(localStorage.getItem("brlMindanaoAthletes_v1") || "[]");
+  const localAthlete = localData.find(a => a.id === id);
+  if (localAthlete) {
+    name = localAthlete.name || '';
+    sport = localAthlete.sport || '';
+    division = localAthlete.division || '';
+    team = localAthlete.team || '';
+    position = localAthlete.position || '';
+    jersey = localAthlete.jersey || '';
+    city = localAthlete.city || '';
+    season = localAthlete.season || '';
+    bio = localAthlete.bio || '';
+    photo = localAthlete.photo || '';
+    birthCert = localAthlete.birthCert || '';
+    schoolId = localAthlete.schoolId || '';
+    medicalCert = localAthlete.medicalCert || '';
+    consentForm = localAthlete.consentForm || '';
+    waiverForm = localAthlete.waiverForm || '';
   }
+}
 
-  let athlete = null;
+const card = document.getElementById('profileCard');
 
-  // 1. Fetch document from Firestore
-  try {
-    const docRef = doc(db, "athletes", id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      athlete = docSnap.data();
-    }
-  } catch (err) {
-    console.warn("Firestore fetch error:", err);
-  }
-
-  // 2. Fallback to local storage if Firestore fetch is unavailable
-  if (!athlete) {
-    const localData = JSON.parse(localStorage.getItem("brlMindanaoAthletes_v1") || "[]");
-    athlete = localData.find(a => a.id === id);
-  }
-
-  if (!athlete || !athlete.name) {
-    card.innerHTML = `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
-    return;
-  }
-
-  const rawPhotoUrl = athlete.photo ? String(athlete.photo).trim() : '';
-  const isWebUrl = rawPhotoUrl.startsWith('http://') || rawPhotoUrl.startsWith('https://');
-
+if (!name && !id) {
+  card.innerHTML = `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
+} else {
   card.innerHTML = `
     <div class="header">
-      <div class="photo-container">
-        ${isWebUrl ? `
-          <img 
-            src="${rawPhotoUrl}" 
-            class="photo" 
-            alt="${escText(athlete.name)}"
-            onerror="this.style.display='none'; document.getElementById('photoFallback').style.display='flex'; document.getElementById('debugLink').style.display='block';"
-          >
-          <div id="photoFallback" class="photo-fallback" style="display:none;">⚾</div>
-        ` : `
-          <div class="photo-fallback">⚾</div>
-        `}
-      </div>
-      
-      ${isWebUrl ? `<a id="debugLink" href="${rawPhotoUrl}" target="_blank" class="debug-link" style="display:none;">Photo load error. Click to test image URL</a>` : ''}
-
-      <h1>${escText(athlete.name)}</h1>
-      <div class="subtitle">${escText(athlete.sport)} •${escText(athlete.division)}</div>
-      <small style="color:#65766B;">Charter ID: ${escText(athlete.id)}</small>
+      ${photo ? `<img src="${esc(photo)}" class="photo">` : `<div style="font-size:64px;">⚾</div>`}
+      <h1>${esc(name || 'Athlete Profile')}</h1>
+      <div class="subtitle">${esc(sport)} • ${esc(division)}</div>
+      <small style="color:#65766B;">Charter ID: ${esc(id)}</small>
     </div>
-
     <table>
-      <tr><td>Team / League</td><td>${escText(athlete.team || 'N/A')}</td></tr>
-      <tr><td>Position</td><td>${escText(athlete.position || 'N/A')}</td></tr>
-      <tr><td>Jersey #</td><td>${escText(
+      <tr><td>Team / League</td><td>${esc(team || 'N/A')}</td></tr>
+      <tr><td>Position</td><td>${esc(position || 'N/A')}</td></tr>
+      <tr><td>Jersey #</td><td>${esc(jersey || 'N/A')}</td></tr>
+      <tr><td>City / Province</td><td>${esc(city || 'N/A')}</td></tr>
+      <tr><td>Season</td><td>${esc(season || 'N/A')}</td></tr>
+      <tr><td>Bio</td><td>${esc(bio || 'N/A')}</td></tr>
+    </table>
+    <h3>Verified Documents</h3>
+    <div class="docs">
+      ${birthCert ? `<a href="${esc(birthCert)}" target="_blank" class="btn">Birth Certificate</a>` : ''}
+      ${schoolId ? `<a href="${esc(schoolId)}" target="_blank" class="btn">School ID</a>` : ''}
+      ${medicalCert ? `<a href="${esc(medicalCert)}" target="_blank" class="btn">Medical Certificate</a>` : ''}
+      ${consentForm ? `<a href="${esc(consentForm)}" target="_blank" class="btn">Parental Consent</a>` : ''}
+      ${waiverForm ? `<a href="${esc(waiverForm)}" target="_blank" class="btn">Waiver Form</a>` : ''}
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
