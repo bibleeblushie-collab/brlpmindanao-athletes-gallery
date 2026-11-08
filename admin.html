@@ -617,26 +617,10 @@ function getFormattedCharterId(athlete) {
 }
 
 function getAthleteShareUrl(athlete) {
-  if (!athlete) return '';
-  const params = new URLSearchParams({
-    id: getFormattedCharterId(athlete),
-    name: athlete.name || '',
-    sport: athlete.sport || '',
-    division: athlete.division || '',
-    team: athlete.team || '',
-    position: athlete.position || '',
-    jersey: athlete.jersey || '',
-    city: athlete.city || '',
-    season: athlete.season || '',
-    bio: athlete.bio || '',
-    photo: athlete.photo && athlete.photo.startsWith('http') ? athlete.photo : '',
-    birthCert: athlete.birthCert || '',
-    schoolId: athlete.schoolId || '',
-    medicalCert: athlete.medicalCert || '',
-    consentForm: athlete.consentForm || '',
-    waiverForm: athlete.waiverForm || ''
-  });
-  return new URL(`profile.html?${params.toString()}`, window.location.href).href;
+  return new URL(
+    `profile.html?id=${encodeURIComponent(athlete.id)}`,
+    window.location.href
+  ).href;
 }
 
 function generateQR(id) {
@@ -845,6 +829,9 @@ function deleteAthlete(id){
   const a = athletes.find(x => x.id === id);
   if(confirm(`Delete profile for ${a?.name || 'this athlete'}?`)){
     athletes = athletes.filter(x => x.id !== id);
+
+    console.log("Saving athlete:", a);
+    
     save();
     render();
   }
