@@ -616,272 +616,134 @@ function getFormattedCharterId(athlete) {
   return `BRLP-MIN-${String(num).padStart(3,'0')}`;
 }
 
+function getAthleteShareUrl(athlete) {
+  if (!athlete) return '';
+  const params = new URLSearchParams({
+    id: getFormattedCharterId(athlete),
+    name: athlete.name || '',
+    sport: athlete.sport || '',
+    division: athlete.division || '',
+    team: athlete.team || '',
+    position: athlete.position || '',
+    jersey: athlete.jersey || '',
+    city: athlete.city || '',
+    season: athlete.season || '',
+    bio: athlete.bio || '',
+    photo: athlete.photo && athlete.photo.startsWith('http') ? athlete.photo : '',
+    birthCert: athlete.birthCert || '',
+    schoolId: athlete.schoolId || '',
+    medicalCert: athlete.medicalCert || '',
+    consentForm: athlete.consentForm || '',
+    waiverForm: athlete.waiverForm || ''
+  });
+  return new URL(`profile.html?${params.toString()}`, window.location.href).href;
+}
+
 function generateQR(id) {
-    const athlete = athletes.find(a => a.id === id);
-    if (!athlete) return;
+  const athlete = athletes.find(a => a.id === id);
+  if (!athlete) return;
 
-    document.getElementById("qrName").textContent = athlete.name;
-    const athleteURL = new URL(`profile.html?id=${encodeURIComponent(id)}`, window.location.href).href;
-    const canvas = document.getElementById("qrCanvas");
+  document.getElementById("qrName").textContent = athlete.name;
+  const athleteURL = getAthleteShareUrl(athlete);
+  const canvas = document.getElementById("qrCanvas");
 
-    QRCode.toCanvas(canvas, athleteURL, { width: 250 }, function(error) {
-        if (error) {
-            alert("Unable to generate QR code.");
-            console.error(error);
-            return;
-        }
-        document.getElementById("qrDlg").showModal();
-    });
+  QRCode.toCanvas(canvas, athleteURL, { width: 250 }, function(error) {
+    if (error) {
+      alert("Unable to generate QR code.");
+      console.error(error);
+      return;
+    }
+    document.getElementById("qrDlg").showModal();
+  });
 }
 
 function printQR(id){
-    const athlete = athletes.find(a => a.id === id);
-    if(!athlete) return;
+  const athlete = athletes.find(a => a.id === id);
+  if(!athlete) return;
 
-    const athleteURL = new URL(`profile.html?id=${encodeURIComponent(id)}`, window.location.href).href;
+  const athleteURL = getAthleteShareUrl(athlete);
 
-    QRCode.toDataURL(athleteURL, function(err, url){
-        const w = window.open('', '_blank');
-        w.document.write(`
-            <html>
-            <head>
-            <title>${esc(athlete.name)}</title>
-            <style>
-              body{ font-family:Arial; text-align:center; padding:30px; }
-              img{ width:250px; }
-            </style>
-            </head>
-            <body>
-              <h2>${esc(athlete.name)}</h2>
-              <p>${esc(athlete.sport)} • ${esc(athlete.division)}</p>
-              <img src="${url}">
-            </body>
-            </html>
-        `);
-        w.document.close();
-        setTimeout(() => { w.print(); }, 500);
-    });
+  QRCode.toDataURL(athleteURL, function(err, url){
+    const w = window.open('', '_blank');
+    w.document.write(`
+      <html>
+      <head>
+      <title>${esc(athlete.name)}</title>
+      <style>body{ font-family:Arial; text-align:center; padding:30px; } img{ width:250px; }</style>
+      </head>
+      <body>
+        <h2>${esc(athlete.name)}</h2>
+        <p>${esc(athlete.sport)} • ${esc(athlete.division)}</p>
+        <img src="${url}">
+      </body>
+      </html>
+    `);
+    w.document.close();
+    setTimeout(() => { w.print(); }, 500);
+  });
 }
 
-/* FIXED PRINT ID FUNCTION WITH DYNAMIC TEMPLATE PATH & LOAD LISTENER */
 function printID(id){
-    const athlete = athletes.find(a => a.id === id);
-    if(!athlete) return;
+  const athlete = athletes.find(a => a.id === id);
+  if(!athlete) return;
 
-    const charterId = getFormattedCharterId(athlete);
-    const athleteURL = new URL(`profile.html?id=${encodeURIComponent(id)}`, window.location.href).href;
-    
-    /* Dynamically gets absolute path of id-template.png regardless of host domain or folder */
-    const templateUrl = new URL('id-template.png', window.location.href).href;
+  const charterId = getFormattedCharterId(athlete);
+  const athleteURL = getAthleteShareUrl(athlete);
+  const templateUrl = new URL('id-template.png', window.location.href).href;
 
-    QRCode.toDataURL(athleteURL, { width: 300 }, function(err, qrData){
-        if(err) {
-            alert("Unable to render QR code for printing.");
-            return;
+  QRCode.toDataURL(athleteURL, { width: 300 }, function(err, qrData){
+    if(err) {
+      alert("Unable to render QR code for printing.");
+      return;
+    }
+
+    const w = window.open('', '_blank');
+    w.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+      <base href="${window.location.href}">
+      <title>ID Card - ${esc(athlete.name)}</title>
+      <style>
+        @page { size: A4 portrait; margin: 0mm; }
+        @media print {
+          html, body { width: 210mm; height: 297mm; margin: 0; padding: 0; overflow: hidden; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .card { width: 210mm !important; height: 297mm !important; box-shadow: none !important; page-break-after: avoid !important; page-break-inside: avoid !important; }
         }
-
-        const w = window.open('', '_blank');
-        w.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-        <base href="${window.location.href}">
-        <title>ID Card - ${esc(athlete.name)}</title>
-        <style>
-          @page {
-            size: A4 portrait;
-            margin: 0mm;
-          }
-          @media print {
-            html, body {
-              width: 210mm;
-              height: 297mm;
-              margin: 0;
-              padding: 0;
-              overflow: hidden;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-            .card {
-              width: 210mm !important;
-              height: 297mm !important;
-              box-shadow: none !important;
-              page-break-after: avoid !important;
-              page-break-inside: avoid !important;
-            }
-          }
-          * { box-sizing: border-box; }
-          body {
-            margin: 0;
-            padding: 0;
-            width: 210mm;
-            height: 297mm;
-            font-family: Arial, sans-serif;
-            background: #ffffff;
-            overflow: hidden;
-          }
-
-          /* A4 CANVAS CONTAINER */
-          .card {
-            position: relative;
-            width: 210mm;
-            height: 297mm;
-            overflow: hidden;
-            background: #ffffff;
-          }
-
-          /* Background Template Image */
-          .bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 210mm;
-            height: 297mm;
-            object-fit: fill;
-            z-index: 1;
-          }
-
-          /* Athlete Photo */
-          .photo {
-            position: absolute;
-            top: 70mm;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80mm;
-            height: 80mm;
-            object-fit: cover;
-            border-radius: 3mm;
-            z-index: 2;
-          }
-
-          /* Athlete Name */
-          .name {
-            position: absolute;
-            top: 155mm;
-            left: 55%;
-            transform: translateX(-50%);
-            width: 76%;
-            text-align: center;
-            font-size: 8.5mm;
-            font-weight: 900;
-            color: #14532D;
-            text-transform: uppercase;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 0 4mm;
-            z-index: 2;
-          }
-
-          /* Role */
-          .role {
-            position: absolute;
-            top: 172mm;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 76%;
-            text-align: center;
-            font-size: 8.5mm;
-            font-weight: 800;
-            color: #14532D;
-            text-transform: uppercase;
-            letter-spacing: 0.5mm;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 0 4mm;
-            z-index: 2;
-          }
-
-          /* Charter ID */
-          .charter {
-            position: absolute;
-            top: 190mm;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 76%;
-            text-align: center;
-            font-size: 8.5mm;
-            font-weight: 800;
-            color: #183326;
-            font-family: Arial, sans-serif;
-            letter-spacing: 0.3mm;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 0 4mm;
-            z-index: 2;
-          }
-
-          /* Division & Sport */
-          .division {
-            position: absolute;
-            top: 205mm;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 76%;
-            text-align: center;
-            font-size: 8.5mm;
-            font-weight: 800;
-            color: #14532D;
-            text-transform: uppercase;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 0 4mm;
-            z-index: 2;
-          }
-
-          /* QR Code */
-          .qr {
-            position: absolute;
-            top: 230mm;
-            left: 6.5mm;
-            width: 60mm;
-            height: 60mm;
-            z-index: 2;
-            background: #ffffff;
-            padding: 1.5mm;
-            border-radius: 2mm;
-          }
-        </style>
-        </head>
-        <body>
-
-        <div class="card">
-            <img src="${templateUrl}" class="bg" id="bgTemplate">
-
-            ${athlete.photo ? `<img src="${athlete.photo}" class="photo">` : ''}
-
-            <div class="name">${esc(athlete.name)}</div>
-            <div class="role">PLAYER</div>
-            <div class="charter">${esc(charterId)}</div>
-            <div class="division">${esc(athlete.sport)} • ${esc(athlete.division)}</div>
-
-            <img src="${qrData}" class="qr">
-        </div>
-
-        <script>
-          function triggerPrint() {
-            window.focus();
-            window.print();
-          }
-
-          const templateImg = document.getElementById('bgTemplate');
-          if (templateImg.complete) {
-            setTimeout(triggerPrint, 300);
-          } else {
-            templateImg.onload = function() { setTimeout(triggerPrint, 300); };
-            templateImg.onerror = function() { triggerPrint(); };
-          }
-        <\/script>
-        </body>
-        </html>
-        `);
-        w.document.close();
-    });
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; width: 210mm; height: 297mm; font-family: Arial, sans-serif; background: #ffffff; overflow: hidden; }
+        .card { position: relative; width: 210mm; height: 297mm; overflow: hidden; background: #ffffff; }
+        .bg { position: absolute; top: 0; left: 0; width: 210mm; height: 297mm; object-fit: fill; z-index: 1; }
+        .photo { position: absolute; top: 70mm; left: 50%; transform: translateX(-50%); width: 80mm; height: 80mm; object-fit: cover; border-radius: 3mm; z-index: 2; }
+        .name { position: absolute; top: 155mm; left: 55%; transform: translateX(-50%); width: 76%; text-align: center; font-size: 8.5mm; font-weight: 900; color: #14532D; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4mm; z-index: 2; }
+        .role { position: absolute; top: 172mm; left: 50%; transform: translateX(-50%); width: 76%; text-align: center; font-size: 8.5mm; font-weight: 800; color: #14532D; text-transform: uppercase; letter-spacing: 0.5mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4mm; z-index: 2; }
+        .charter { position: absolute; top: 190mm; left: 50%; transform: translateX(-50%); width: 76%; text-align: center; font-size: 8.5mm; font-weight: 800; color: #183326; font-family: Arial, sans-serif; letter-spacing: 0.3mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4mm; z-index: 2; }
+        .division { position: absolute; top: 205mm; left: 50%; transform: translateX(-50%); width: 76%; text-align: center; font-size: 8.5mm; font-weight: 800; color: #14532D; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4mm; z-index: 2; }
+        .qr { position: absolute; top: 230mm; left: 6.5mm; width: 60mm; height: 60mm; z-index: 2; background: #ffffff; padding: 1.5mm; border-radius: 2mm; }
+      </style>
+      </head>
+      <body>
+      <div class="card">
+        <img src="${templateUrl}" class="bg" id="bgTemplate">
+        ${athlete.photo ? `<img src="${athlete.photo}" class="photo">` : ''}
+        <div class="name">${esc(athlete.name)}</div>
+        <div class="role">PLAYER</div>
+        <div class="charter">${esc(charterId)}</div>
+        <div class="division">${esc(athlete.sport)} • ${esc(athlete.division)}</div>
+        <img src="${qrData}" class="qr">
+      </div>
+      <script>
+        function triggerPrint() { window.focus(); window.print(); }
+        const templateImg = document.getElementById('bgTemplate');
+        if (templateImg.complete) { setTimeout(triggerPrint, 300); }
+        else { templateImg.onload = function() { setTimeout(triggerPrint, 300); }; templateImg.onerror = function() { triggerPrint(); }; }
+      <\/script>
+      </body>
+      </html>
+    `);
+    w.document.close();
+  });
 }
-
 function render(){
     const isAdmin = sessionStorage.getItem("isAdmin") === "true";
 
