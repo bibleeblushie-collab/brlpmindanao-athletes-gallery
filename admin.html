@@ -405,14 +405,10 @@ dialog::backdrop{
   }
 }
 </style>
+
   <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-
-import {
-  getFirestore,
-  doc,
-  setDoc
-} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAhcWEoisQPkmBQ4ICgnyv0uBWIFE-VxiA",
@@ -429,9 +425,8 @@ const app = initializeApp(firebaseConfig);
 window.db = getFirestore(app);
 window.doc = doc;
 window.setDoc = setDoc;
-
-console.log("Firebase Connected");
 </script>
+  
 </head>
 
 <body>
@@ -713,7 +708,7 @@ function printID(id){
     }
 
     const w = window.open('', '_blank');
-   w.document.write(`
+
       <!DOCTYPE html>
       <html>
       <head>
