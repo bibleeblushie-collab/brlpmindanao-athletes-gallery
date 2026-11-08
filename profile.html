@@ -22,98 +22,55 @@
 
 <div class="card" id="profileCard">Loading profile...</div>
 
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-
-import {
-  getFirestore,
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAhcWEoisQPkmBQ4ICgnyv0uBWIFE-VxiA",
-  authDomain: "brlp-mindanao-athletes-gallery.firebaseapp.com",
-  projectId: "brlp-mindanao-athletes-gallery",
-  storageBucket: "brlp-mindanao-athletes-gallery.firebasestorage.app",
-  messagingSenderId: "801559007324",
-  appId: "1:801559007324:web:f05b77f0c5aabbfc665699",
-  measurementId: "G-RDBEBX13XV"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
+<script>
 const params = new URLSearchParams(window.location.search);
 const athleteId = params.get("id");
 
+const athletes =
+    JSON.parse(localStorage.getItem("brlMindanaoAthletes_v1") || "[]");
+
+const athlete =
+    athletes.find(a => a.id === athleteId);
+
 const card = document.getElementById("profileCard");
 
-async function loadAthlete() {
+if (!athlete) {
 
-    if (!athleteId) {
-        card.innerHTML =
-        `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
-        return;
-    }
+    card.innerHTML =
+      "<h2 style='text-align:center;color:#D62828'>Athlete profile not found.</h2>";
 
-    try {
+} else {
 
-        const athleteRef = doc(db, "athletes", athleteId);
-
-        const athleteSnap = await getDoc(athleteRef);
-
-        if (!athleteSnap.exists()) {
-            card.innerHTML =
-            `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
-            return;
+    card.innerHTML = `
+      <div class="header">
+        ${
+          athlete.photo
+            ? `<img src="${athlete.photo}" class="photo">`
+            : `<div style="font-size:64px;">⚾</div>`
         }
 
-        const athlete = athleteSnap.data();
+        <h1>${athlete.name}</h1>
 
-        card.innerHTML = `
-          <div class="header">
-            ${
-              athlete.photo
-                ? `<img src="${athlete.photo}" class="photo">`
-                : `<div style="font-size:64px;">⚾</div>`
-            }
+        <div class="subtitle">
+          ${athlete.sport} • ${athlete.division}
+        </div>
 
-            <h1>${athlete.name || ''}</h1>
+        <small style="color:#65766B;">
+          Charter ID: ${athlete.id}
+        </small>
+      </div>
 
-            <div class="subtitle">
-              ${athlete.sport || ''} • ${athlete.division || ''}
-            </div>
-
-            <small style="color:#65766B;">
-              Charter ID: ${athlete.id || athleteId}
-            </small>
-          </div>
-
-          <table>
-            <tr><td>Team / League</td><td>${athlete.team || 'N/A'}</td></tr>
-            <tr><td>Position</td><td>${athlete.position || 'N/A'}</td></tr>
-            <tr><td>Jersey #</td><td>${athlete.jersey || 'N/A'}</td></tr>
-            <tr><td>City / Province</td><td>${athlete.city || 'N/A'}</td></tr>
-            <tr><td>Season</td><td>${athlete.season || 'N/A'}</td></tr>
-            <tr><td>Bio</td><td>${athlete.bio || 'N/A'}</td></tr>
-          </table>
-        `;
-
-    } catch (error) {
-
-        console.error(error);
-
-        card.innerHTML =
-        `<h2 style="text-align:center;color:#D62828;">Error loading profile.</h2>`;
-    }
+      <table>
+        <tr><td>Team</td><td>${athlete.team || 'N/A'}</td></tr>
+        <tr><td>Position</td><td>${athlete.position || 'N/A'}</td></tr>
+        <tr><td>Jersey</td><td>${athlete.jersey || 'N/A'}</td></tr>
+        <tr><td>City</td><td>${athlete.city || 'N/A'}</td></tr>
+        <tr><td>Season</td><td>${athlete.season || 'N/A'}</td></tr>
+        <tr><td>Bio</td><td>${athlete.bio || 'N/A'}</td></tr>
+      </table>
+    `;
 }
-
-loadAthlete();
-
 </script>
-
 function esc(s = '') {
   return String(s).replace(/[&<>"']/g, c => ({
     '&': '&amp;',
