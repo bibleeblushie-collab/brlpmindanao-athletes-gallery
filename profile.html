@@ -1,65 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athlete Profile • Babe Ruth League Philippines</title>
+  <style>
+    body { font-family: Inter, Segoe UI, sans-serif; background: #F7FAF7; color: #183326; margin: 0; padding: 20px; }
+    .card { max-width: 600px; margin: 20px auto; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-top: 6px solid #14532D; }
+    .header { text-align: center; }
+    .photo { width: 180px; height: 180px; object-fit: cover; border-radius: 50%; border: 4px solid #14532D; margin-bottom: 12px; }
+    h1 { margin: 8px 0 4px; color: #14532D; }
+    .subtitle { color: #65766B; font-weight: 700; text-transform: uppercase; font-size: 14px; }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    td { padding: 10px 0; border-bottom: 1px solid #E0EAE2; }
+    td:first-child { font-weight: bold; color: #586B5D; width: 35%; }
+    .docs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+    .btn { background: #14532D; color: white; padding: 8px 14px; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold; }
+  </style>
+</head>
 <body>
 
-<h1>Profile Page Loaded</h1>
-
-<div id="profile"></div>
+<div class="card" id="profileCard">Loading profile...</div>
 
 <script>
-
-const athletes =
-JSON.parse(
-localStorage.getItem("brlMindanaoAthletes_v1") || "[]"
-);
-
-const params =
-new URLSearchParams(window.location.search);
-
-const athleteId =
-params.get("id");
-
-const athlete =
-athletes.find(a => a.id === athleteId);
-
-if(!athlete){
-
-document.getElementById("profile").innerHTML = `
-<h2>Athlete Not Found</h2>
-<p>This device does not contain the athlete database.</p>
-`;
-
-}else{
-
-document.getElementById("profile").innerHTML = `
-
-<h1>${athlete.name}</h1>
-
-<p><b>Sport:</b> ${athlete.sport}</p>
-
-<p><b>Division:</b> ${athlete.division}</p>
-
-<p><b>Team:</b> ${athlete.team}</p>
-
-<p><b>Position:</b> ${athlete.position}</p>
-
-<p><b>City:</b> ${athlete.city}</p>
-
-<p><b>Season:</b> ${athlete.season}</p>
-
-${
-athlete.photo
-?
-`<img src="${athlete.photo}"
-style="width:250px;border-radius:12px;">`
-:
-''
+function getQueryParam(key) {
+  return new URLSearchParams(window.location.search).get(key) || '';
 }
 
-`;
-
+function esc(s = '') {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-</script>
+const id = getQueryParam('id');
+const name = getQueryParam('name');
+const sport = getQueryParam('sport');
+const division = getQueryParam('division');
+const team = getQueryParam('team');
+const position = getQueryParam('position');
+const jersey = getQueryParam('jersey');
+const city = getQueryParam('city');
+const season = getQueryParam('season');
+const bio = getQueryParam('bio');
+const photo = getQueryParam('photo');
 
-</script>
+const birthCert = getQueryParam('birthCert');
+const schoolId = getQueryParam('schoolId');
+const medicalCert = getQueryParam('medicalCert');
+const consentForm = getQueryParam('consentForm');
+const waiverForm = getQueryParam('waiverForm');
 
+const card = document.getElementById('profileCard');
+
+if (!name) {
+  card.innerHTML = `<h2 style="text-align:center;color:#D62828;">Athlete profile not found.</h2>`;
+} else {
+  card.innerHTML = `
+    <div class="header">
+      ${photo ? `<img src="${esc(photo)}" class="photo">` : `<div style="font-size:64px;">⚾</div>`}
+      <h1>${esc(name)}</h1>
+      <div class="subtitle">${esc(sport)} • ${esc(division)}</div>
+      <small style="color:#65766B;">Charter ID: ${esc(id)}</small>
+    </div>
+    <table>
+      <tr><td>Team / League</td><td>${esc(team || 'N/A')}</td></tr>
+      <tr><td>Position</td><td>${esc(position || 'N/A')}</td></tr>
+      <tr><td>Jersey #</td><td>${esc(jersey || 'N/A')}</td></tr>
+      <tr><td>City / Province</td><td>${esc(city || 'N/A')}</td></tr>
+      <tr><td>Season</td><td>${esc(season || 'N/A')}</td></tr>
+      <tr><td>Bio</td><td>${esc(bio || 'N/A')}</td></tr>
+    </table>
+    <h3>Verified Documents</h3>
+    <div class="docs">
+      ${birthCert ? `<a href="${esc(birthCert)}" target="_blank" class="btn">Birth Certificate</a>` : ''}
+      ${schoolId ? `<a href="${esc(schoolId)}" target="_blank" class="btn">School ID</a>` : ''}
+      ${medicalCert ? `<a href="${esc(medicalCert)}" target="_blank" class="btn">Medical Certificate</a>` : ''}
+      ${consentForm ? `<a href="${esc(consentForm)}" target="_blank" class="btn">Parental Consent</a>` : ''}
+      ${waiverForm ? `<a href="${esc(waiverForm)}" target="_blank" class="btn">Waiver Form</a>` : ''}
+    </div>
+  `;
+}
+</script>
 </body>
+</html>
