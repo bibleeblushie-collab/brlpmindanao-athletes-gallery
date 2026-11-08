@@ -869,6 +869,11 @@ $('athleteForm').addEventListener('submit', async e => {
     waiverForm: $('waiverForm').value.trim(),
     photo: photoData
   };
+  await setDoc(
+    doc(db, "athletes", a.id),
+    a
+);
+  
 
   if(old) athletes = athletes.map(x => x.id === id ? a : x);
   else athletes.unshift(a);
