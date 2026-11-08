@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
   // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
     apiKey: "AIzaSyAhcWEoisQPkmBQ4ICgnyv0uBWIFE-VxiA",
     authDomain: "brlp-mindanao-athletes-gallery.firebaseapp.com",
@@ -20,8 +24,7 @@
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
-  </script>
-
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Athlete Profile • Babe Ruth League Philippines</title>
@@ -36,19 +39,12 @@
     td { padding: 10px 0; border-bottom: 1px solid #E0EAE2; }
     td:first-child { font-weight: bold; color: #586B5D; width: 35%; }
     .docs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
-    .btn { background: #14532D; color: white; padding: 10px 16px; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold; border: none; cursor: pointer; display: inline-block; transition: background 0.2s; }
-    .btn:hover { background: #0f3d21; }
-    .btn-secondary { background: #D62828; }
-    .btn-secondary:hover { background: #b91f1f; }
-    .actions { text-align: center; margin-top: 24px; padding-top: 18px; border-top: 1px solid #E0EAE2; }
+    .btn { background: #14532D; color: white; padding: 8px 14px; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold; }
   </style>
 </head>
 <body>
 
 <div class="card" id="profileCard">Loading profile...</div>
-
-<!-- QR CODE LIBRARY -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <script>
 function getQueryParam(key) {
@@ -59,7 +55,7 @@ function esc(s = '') {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-const id = getQueryParam('id') || 'BRLP-MIN-001';
+const id = getQueryParam('id');
 const name = getQueryParam('name');
 const sport = getQueryParam('sport');
 const division = getQueryParam('division');
@@ -86,7 +82,7 @@ if (!name) {
     <div class="header">
       ${photo ? `<img src="${esc(photo)}" class="photo">` : `<div style="font-size:64px;">⚾</div>`}
       <h1>${esc(name)}</h1>
-      <div class="subtitle">${esc(sport)} •${esc(division)}</div>
+      <div class="subtitle">${esc(sport)} • ${esc(division)}</div>
       <small style="color:#65766B;">Charter ID: ${esc(id)}</small>
     </div>
     <table>
@@ -105,36 +101,8 @@ if (!name) {
       ${consentForm ? `<a href="${esc(consentForm)}" target="_blank" class="btn">Parental Consent</a>` : ''}
       ${waiverForm ? `<a href="${esc(waiverForm)}" target="_blank" class="btn">Waiver Form</a>` : ''}
     </div>
-
-    <div class="actions">
-      <button onclick="printID()" class="btn btn-secondary">🪪 Print ID Card</button>
-    </div>
   `;
 }
-
-function printID() {
-  const currentUrl = window.location.href;
-  const templateUrl = new URL('id-template.png', window.location.href).href;
-
-  QRCode.toDataURL(currentUrl, { width: 300, errorCorrectionLevel: 'L' }, function(err, qrData) {
-    if (err) {
-      alert("Unable to generate QR code for ID printing.");
-      console.error(err);
-      return;
-    }
-
-    const w = window.open('', '_blank');
-    w.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-      <base href="${window.location.href}">
-      <title>ID Card - ${esc(name)}</title>
-      <style>
-        @page { size: A4 portrait; margin: 0mm; }
-        @media print {
-          html, body { width: 210mm; height: 297mm; margin: 0; padding: 0; overflow: hidden; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          .card { width: 210mm !important; height: 297mm !important; box-shadow: none !important; page-break-after: avoid !important; page-break-inside: avoid !important; }
-        }
-        * { box-sizing: border-box; }
-        body { margin: 0; padding
+</script>
+</body>
+</html>
